@@ -11,8 +11,7 @@ from typing import Tuple, Optional, Any, List
 from ..configuration import paths
 from ..model.exceptions import PluginImportException
 from ..model.plugins import GenericPlugin
-from ....utility.bronze import json_utility
-from ....utility.silver import file_system_utility
+from ..static_utility import json_utility, file_system_utility
 
 
 class PluginController(object):

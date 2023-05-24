@@ -6,10 +6,10 @@
 ****************************************************
 """
 import os
+import sys
 from typing import Any, Optional, List
 from .exceptions import PluginImportException, PluginRuntimeException
-from ....utility.bronze import json_utility
-from ....utility.silver import file_system_utility, environment_utility
+from ..static_utility import json_utility, file_system_utility, environment_utility
 
 
 class GenericPlugin(object):
