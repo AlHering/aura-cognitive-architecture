@@ -5,7 +5,7 @@ This repository is a workbench for creating and testing architectures and soluti
 # Current Roadmap
 Current target: v0.1
 This target should included
-- basic documentation and architecture
+- adding and extending basic documentation and architecture
 - adding in and adjusting common data backend interface
 - adding in and adjusting common plugin interface
 - adding in and adjusting common frontend
