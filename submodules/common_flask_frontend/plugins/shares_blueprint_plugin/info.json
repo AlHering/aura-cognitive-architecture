@@ -1,0 +1,9 @@
+{
+  "name": "SharesBlueprints",
+  "type": "blueprints",
+  "data_path": "./data",
+  "blueprints": "./blueprints.py",
+  "requirements": [
+    "yfinance==0.2.18"
+  ]
+}

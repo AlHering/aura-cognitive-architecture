@@ -1,0 +1,6 @@
+{
+  "name": "test_database_plugin",
+  "type": "database",
+  "data_path": "./../../test_workspace/test_database_plugin_data",
+  "database": "./database.py"
+}

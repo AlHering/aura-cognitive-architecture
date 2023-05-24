@@ -1,0 +1,8 @@
+- Login und Registrierung implementieren (Registrierung -> Post auf /login; Login -> Post auf /index)
+    - Forgot Password stump implementieren
+- eMail für Verifikation und Anbindung von Forgot Password
+- Datenbank Layer hinterlegen
+- Charting und Tabellen nachvollziehen -> API erstellen
+
+- Option zum import von lokalen Icons
+- https://www.orioniconlibrary.com/ -> data/files_icons_orion_svg-sprite.html
