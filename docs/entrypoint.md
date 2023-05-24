@@ -20,16 +20,7 @@ Robotics, Natural Language Processing and Understanding, Machine Learning, Exper
 In an endeavor to not create an opaque mess and cause even more confusion on the not so cleanly defined and bordered topic of AI, I will organize mentioned topics in respect to the project's components for which they are important later on.
 
 # Branches
-Work is currently done in "development" branch.
-
-# Current Roadmap
-Current target: v0.1
-This target should included
-- basic documentation and architecture
-- adding in and adjusting common data backend interface
-- adding in and adjusting common plugin interface
-- adding in and adjusting common frontend
-- build workbench frontend for faster prototyping
+Work is currently done in "development" branch. Playgrounds for testing are created (and deleted) dynamically.
 
 # Interesting Projects
 There are many projects around related ideas and topics. Many of them are not only fun to work with but can also be easily integrated into complex problem solving systems:
