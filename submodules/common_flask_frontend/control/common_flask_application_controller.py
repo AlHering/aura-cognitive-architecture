@@ -9,21 +9,20 @@ import os
 import flask
 from multiprocessing import Process
 from flask import Flask, render_template, request, url_for, redirect, flash
-from common_flask_frontend import flask_utility
+from submodules.common_plugin_controller.static_utility import flask_transformation_utility
 from flask import session
 from flask.logging import default_handler
 import hashlib
 import traceback
 from flask_sqlalchemy import SQLAlchemy
 from common_flask_frontend.configuration import configuration as cfg
-from common_flask_frontend.configuration import exceptions
+from submodules.common_flask_frontend.model import exceptions
 from common_flask_frontend.model import database
 from common_flask_frontend.model.plugins import BlueprintPlugin
 from common_flask_frontend.model.login_manager import login_manager, user_loader, login_user, logout_user
 from common_flask_frontend.control import email_control
 from common_plugin_controller.control.common_plugin_controller import PluginController
 from datetime import datetime
-#from webui import WebUI
 import uuid
 import logging
 logging.basicConfig(level=logging.DEBUG)
