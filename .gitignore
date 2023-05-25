@@ -160,3 +160,4 @@ cython_debug/
 # Custom additions
 data/
 docs/literature
+docs/todo
