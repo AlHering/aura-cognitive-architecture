@@ -7,8 +7,8 @@
 """
 import os
 from typing import Union, Any, Optional
-from physical_data_model.model.common_entity_data_interface import CommonEntityDataInterface
-from physical_data_model.utility import file_system_utility, json_utility, environment_utility
+from .common_entity_data_interface import CommonEntityDataInterface
+from ..static_utility import file_system_utility, json_utility, environment_utility
 
 
 class GenericPlugin(object):
