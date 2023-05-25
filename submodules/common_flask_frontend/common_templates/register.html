@@ -1,0 +1,29 @@
+{% extends "decoupled_base.html" %}
+{% block content %}
+
+<form class="register" method="post" action="register">
+    <div class="form-field">
+        <input type="text" placeholder="Username" name="register_username" required/>
+    </div>
+
+    <div class="form-field">
+        <input type="email" placeholder="Email" name="register_email" required/>
+    </div>
+
+    <div class="form-field">
+        <input type="password" placeholder="Password" name="register_password" required/>
+    </div>
+
+    <div class="form-field">
+		<span class="text-checkbox">I agree to the terms of service:</span>
+        <input type="checkbox" name="tos_agreement" required/>
+    </div>
+    <div class="form-field">
+        <button class="btn" type="submit">Signup</button>
+    </div>
+    <div class="form-field">
+        <a href="authentication">Already registered? Resend Authentication Email</a>
+    </div>
+</form>
+
+{% endblock content %}

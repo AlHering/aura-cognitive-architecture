@@ -11,8 +11,7 @@ from typing import Tuple, Optional, Any, List
 from ..configuration import paths
 from ..model.exceptions import PluginImportException
 from ..model.plugins import GenericPlugin
-from ....utility.bronze import json_utility
-from ....utility.silver import file_system_utility
+from ..static_utility import json_utility, file_system_utility
 
 
 class PluginController(object):
@@ -24,7 +23,7 @@ class PluginController(object):
                  supported_types: List[str] = None) -> None:
         """
         Plugin controller for importing and managing plugins.
-        :param plugin_class_dictionary:
+        :param plugin_class_dictionary: Dictionary, mapping plugin type to plugin class.
         :param plugin_folders: Plugin folder list. Defaults to None, in which case local plugin folder is used.
         :param supported_types: Allowed types. Defaults to None in which case all types are allowed.
         """
