@@ -45,7 +45,6 @@ def handle_gateways(filter_index: int = None, data_index: int = None) -> Any:
                 entity_type = args[1]
 
                 if filter_index is not None:
-                    # TODO: Adjust to Filtermask-concept
                     instance.obfuscate_filters(
                         entity_type, args[filter_index], batch)
                 if data_index is not None:
@@ -186,22 +185,21 @@ class CommonEntityDataInterface(ABC):
                 for data_entry in data:
                     self.set_defaults(entity_type, data_entry, data_entry)
 
-    def obfuscate_filters(self, entity_type: str, filters: list, batch: bool = False) -> None:
+    def obfuscate_filters(self, entity_type: str, filters: Union[List[FilterMask], List[List[FilterMask]]], batch: bool = False) -> None:
         """
         Method for obfuscating filters.
         :param entity_type: Entity type.
-        :param filters: Filter masks.
+        :param filters: List of FilterMasks or list of lists of FilterMasks in case of batch filtering.
         :param batch: Flag, declaring whether filters contain multiple entries. Defaults to False.
         """
         if "obfuscate" in self._gateways[entity_type] and filters:
             if not batch:
-                data = {f[0]: f[2] for f in filters}
-                self.obfuscate_entity_data(entity_type, data)
-                for index, f in enumerate(filters):
-                    filters[index] = [f[0], f[1], data[f[2]]]
+                for filtermask in filters:
+                    filtermask.transform(
+                        self._gateways[entity_type]["obfuscate"])
             else:
-                for filter_entry in filters:
-                    self.obfuscate_filters(entity_type, filter_entry)
+                for filter_list in filters:
+                    self.obfuscate_filters(entity_type, filter_list)
 
     def obfuscate_entity_data(self, entity_type: str, data: Union[dict, list, Any], batch: bool = False) -> None:
         """
@@ -371,17 +369,17 @@ class CommonEntityDataInterface(ABC):
         return self._delete_obj(entity_type, filters, **kwargs)
 
     @handle_gateways(filter_index=2, data_index=None)
-    def get_batch(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> List[Any]:
+    def get_batch(self, entity_type: str, filters_list: List[List[FilterMask]], **kwargs: Optional[Any]) -> List[Any]:
         """
         Abstract method for acquring entity_data for multiple entities.
         :param entity_type: Entity type.
-        :param filters: A list of Filtermasks declaring constraints.
+        :param filters_list: :param filters_list: A list of lists of Filtermasks declaring constraints. Each separate list of Filtermasks describes 'OR'-constraints for one entry.
         :param kwargs: Arbitrary keyword arguments.
             'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
         :return: Target entity data entries.
         """
-        results = [self._get_obj(entity_type, filter_entry, **kwargs)
-                   for filter_entry in filters]
+        results = [self._get_obj(entity_type, filters, **kwargs)
+                   for filters in filters_list]
         return [entry for entry in results if entry is not None]
 
     @handle_gateways(filter_index=None, data_index=2)
@@ -399,33 +397,33 @@ class CommonEntityDataInterface(ABC):
         return [entry for entry in results if entry is not None]
 
     @handle_gateways(filter_index=2, data_index=3)
-    def patch_batch(self, entity_type: str, filters: List[FilterMask], entity_data: List[dict], **kwargs: Optional[Any]) -> \
+    def patch_batch(self, entity_type: str, filters_list: List[List[FilterMask]], entity_data: List[dict], **kwargs: Optional[Any]) -> \
             List[Any]:
         """
         Abstract method for patching multiple existing entities.
         :param entity_type: Entity type.
-        :param filters: A list of Filtermasks declaring constraints.
+        :param filters_list: A list of lists of Filtermasks declaring constraints. Each separate list of Filtermasks describes 'OR'-constraints for one entry.
         :param entity_data: List of dictionaries containing entity data.
         :param kwargs: Arbitrary keyword arguments.
             'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
         :return: Target entity data entries.
         """
         results = [self._patch_obj(entity_type, *entry, **kwargs)
-                   for entry in zip(filters, entity_data)]
+                   for entry in zip(filters_list, entity_data)]
         return [entry for entry in results if entry is not None]
 
     @handle_gateways(filter_index=2, data_index=None)
-    def delete_batch(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> List[Any]:
+    def delete_batch(self, entity_type: str, filters_list: List[List[FilterMask]], **kwargs: Optional[Any]) -> List[Any]:
         """
         Abstract method for deleting multiple entities.
         :param entity_type: Entity type.
-        :param filters: A list of Filtermasks declaring constraints.
+        :param filters_list: A list of lists of Filtermasks declaring constraints. Each separate list of Filtermasks describes 'OR'-constraints for one entry.
         :param kwargs: Arbitrary keyword arguments.
             'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
         :return: Target entity data entries.
         """
         results = [self._delete_obj(
-            entity_type, filter_entry, **kwargs) for filter_entry in filters]
+            entity_type, filters, **kwargs) for filters in filters_list]
         return [entry for entry in results if entry is not None]
 
     """
