@@ -272,4 +272,10 @@ class FilterMask(object):
         Method for transforming target values.
         :param transformation: Transformation dict, containing lambda functions for transforming target values.
         """
-        pass
+        for exp in self.expressions:
+            if self.deep:
+                if dictionary_utility.exists(transformation, exp[0]):
+                    exp[2] = dictionary_utility.extract_nested_value(
+                        transformation, exp[0])(exp[2])
+            elif exp[0] in transformation:
+                exp[2] = transformation[exp[0]](exp[2])
