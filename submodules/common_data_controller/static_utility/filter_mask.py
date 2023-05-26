@@ -73,7 +73,7 @@ class FilterMask(object):
     Class, representing FilterMasks objects.
     FilterMasks objects contain a list of constraint expressions.
     An expression is a list of the form ["key", "operator", "value"].
-    Note that the default FilterMasks expect "flat" data in form of a dictionary or an object.
+    Note that the default FilterMasks expect "flat" data in form of an unnested dictionary or an object with direct attributes.
     "Deep" FilterMasks expect a list of "key"-values instead of a single "key"-value and can be used with nested
     dictionaries / recursive objects and will try to unwrap the target values / attributes.
     When checking an object or data against a FilterMasks, all expressions need be correct in order for the object or data
