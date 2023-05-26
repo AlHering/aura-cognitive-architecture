@@ -73,9 +73,9 @@ class FilterMask(object):
     Class, representing FilterMasks objects.
     FilterMasks objects contain a list of constraint expressions.
     An expression is a list of the form ["key", "operator", "value"].
-    Note that the default FilterMasks expect "flat" data in form of a dictionary or an object.
+    Note that the default FilterMasks expect "flat" data in form of an unnested dictionary or an object with direct attributes.
     "Deep" FilterMasks expect a list of "key"-values instead of a single "key"-value and can be used with nested
-    dictionaries / recursive objects and will try to unwrap the target values / attributes.
+    dictionaries / recursive attributes and will try to unwrap the target values / attributes.
     When checking an object or data against a FilterMasks, all expressions need be correct in order for the object or data
     to be validated.
     "OR"-Logic can be implemented, by creating different FilterMasks and wrapping their checks into an any()-function.
@@ -266,3 +266,16 @@ class FilterMask(object):
         return dictionary_utility.exists(data, attribute) and (
             not self.relative or dictionary_utility.exists(reference_data,
                                                            reference_attribute))
+
+    def transform(self, transformation: dict) -> None:
+        """
+        Method for transforming target values.
+        :param transformation: Transformation dict, containing lambda functions for transforming target values.
+        """
+        for exp in self.expressions:
+            if self.deep:
+                if dictionary_utility.exists(transformation, exp[0]):
+                    exp[2] = dictionary_utility.extract_nested_value(
+                        transformation, exp[0])(exp[2])
+            elif exp[0] in transformation:
+                exp[2] = transformation[exp[0]](exp[2])
