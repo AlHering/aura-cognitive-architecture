@@ -83,7 +83,7 @@ class PhysicalDataModel(object):
 
         # Cache for fast-access temporary configuration and data
         self.cache = {
-            "primary_keys": {
+            "keys": {
                 entity_type: [] for entity_type in self._entity_profiles
             }
         }
@@ -228,16 +228,16 @@ class PhysicalDataModel(object):
         return self._routing[entity_type].delete(entity_type, filters, **kwargs)
 
     @authorize
-    def get_batch(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> List[Any]:
+    def get_batch(self, entity_type: str, filters_list: List[List[FilterMask]], **kwargs: Optional[Any]) -> List[Any]:
         """
         Method for acquring entity_data for multiple entities.
         :param entity_type: Entity type.
-        :param filters: A list of Filtermasks declaring constraints.
+        :param filters_list: A list of lists of Filtermasks declaring constraints. Each separate list of Filtermasks describes 'OR'-constraints for one entry.
         :param kwargs: Arbitrary keyword arguments.
             'authorize': Optional password, if data requires authorization.
         :return: Target entity data.
         """
-        return self._routing[entity_type].get_batch(entity_type, filters, **kwargs)
+        return self._routing[entity_type].get_batch(entity_type, filters_list, **kwargs)
 
     @authorize
     def post_batch(self, entity_type: str, entity_data: List[dict], **kwargs: Optional[Any]) -> List[Any]:
@@ -252,28 +252,28 @@ class PhysicalDataModel(object):
         return self._routing[entity_type].post_batch(entity_type, entity_data, **kwargs)
 
     @authorize
-    def patch_batch(self, entity_type: str, filters: List[FilterMask], entity_data: List[dict], **kwargs: Optional[Any]) -> \
+    def patch_batch(self, entity_type: str, filters_list: List[List[FilterMask]], entity_data: List[dict], **kwargs: Optional[Any]) -> \
             List[Any]:
         """
         Method for patching multiple existing entities.
         :param entity_type: Entity type.
-        :param filters: A list of Filtermasks declaring constraints.
+        :param filters_list: A list of lists of Filtermasks declaring constraints. Each separate list of Filtermasks describes 'OR'-constraints for one entry.
         :param entity_data: List of dictionaries containing entity data.
         :param kwargs: Arbitrary keyword arguments.
             'authorize': Optional password, if data requires authorization.
         :return: Target entity data.
         """
-        return self._routing[entity_type].patch_batch(entity_type, filters, entity_data, **kwargs)
+        return self._routing[entity_type].patch_batch(entity_type, filters_list, entity_data, **kwargs)
 
     @authorize
-    def delete_batch(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> List[Any]:
+    def delete_batch(self, entity_type: str, filters_list: List[List[FilterMask]], **kwargs: Optional[Any]) -> List[Any]:
         """
         Method for deleting multiple entities.
         :param entity_type: Entity type.
-        :param filters: A list of Filtermasks declaring constraints.
+        :param filters_list: A list of lists of Filtermasks declaring constraints. Each separate list of Filtermasks describes 'OR'-constraints for one entry.
         :param kwargs: Arbitrary keyword arguments.
             'force_delete': Optional force deletion flag for ignoring soft deletion options.
             'authorize': Optional password, if data requires authorization.
         :return: Target entity data.
         """
-        return self._routing[entity_type].delete_batch(entity_type, filters, **kwargs)
+        return self._routing[entity_type].delete_batch(entity_type, filters_list, **kwargs)
