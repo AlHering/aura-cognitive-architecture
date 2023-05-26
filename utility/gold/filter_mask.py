@@ -267,15 +267,39 @@ class FilterMask(object):
             not self.relative or dictionary_utility.exists(reference_data,
                                                            reference_attribute))
 
-    def transform(self, transformation: dict) -> None:
+    def transform(self, transformation: Any) -> None:
         """
         Method for transforming target values.
-        :param transformation: Transformation dict, containing lambda functions for transforming target values.
+        :param transformation: Transformation dict, containing lambda functions for transforming target values or transformation function.
         """
-        for exp in self.expressions:
-            if self.deep:
+        if self.deep:
+            self._transform_deep(transformation)
+        elif isinstance(transformation, dict):
+            for exp in self.expressions:
+                if exp[2] in transformation:
+                    exp[2] = transformation[exp[0]](exp[2])
+        else:
+            transformed_dict = transformation(
+                {exp[0]: exp[2] for exp in self.expressions})
+            for exp in self.expressions:
+                exp[2] = transformed_dict[exp[0]]
+
+    def _transform_deep(self, transformation: Any) -> None:
+        """
+        Internal method for transforming target values for deep FilterMasks.
+        :param transformation: Transformation dict, containing lambda functions for transforming target values or transformation function.
+        """
+        if isinstance(transformation, dict):
+            for exp in self.expressions:
                 if dictionary_utility.exists(transformation, exp[0]):
                     exp[2] = dictionary_utility.extract_nested_value(
                         transformation, exp[0])(exp[2])
-            elif exp[0] in transformation:
-                exp[2] = transformation[exp[0]](exp[2])
+        else:
+            untransformed_dict = {}
+            for exp in self.expressions:
+                dictionary_utility.set_and_extend_nested_field(
+                    untransformed_dict, exp[0], exp[2])
+            transformed_dict = transformation(untransformed_dict)
+            for exp in self.expressions:
+                exp[2] = dictionary_utility.extract_nested_value(
+                    transformed_dict, exp[0])
