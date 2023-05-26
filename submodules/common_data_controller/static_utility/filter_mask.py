@@ -266,3 +266,10 @@ class FilterMask(object):
         return dictionary_utility.exists(data, attribute) and (
             not self.relative or dictionary_utility.exists(reference_data,
                                                            reference_attribute))
+
+    def transform(self, transformation: dict) -> None:
+        """
+        Method for transforming target values.
+        :param transformation: Transformation dict, containing lambda functions for transforming target values.
+        """
+        pass
