@@ -144,10 +144,10 @@ class SQLAlchemyEntityInterface(CommonEntityDataInterface):
         :return: Filter expressions.
         """
         filter_expressions = []
-        for filter_mask in filters:
-            filter_expressions.append(
-                SQLALCHEMY_FILTER_CONVERTER[filter_mask[1]](getattr(self.model[entity_type], filter_mask[0]),
-                                                            filter_mask[2]))
+        for filtermask in filters:
+            filter_expressions.extend([
+                SQLALCHEMY_FILTER_CONVERTER[exp[1]](getattr(self.model[entity_type], exp[0]),
+                                                    exp[2]) for exp in filtermask.expressions])
         return filter_expressions
 
     """
@@ -230,18 +230,18 @@ class SQLAlchemyEntityInterface(CommonEntityDataInterface):
 
     # override
     @handle_gateways(filter_index=2, data_index=None)
-    def get_batch(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> List[dict]:
+    def get_batch(self, entity_type: str, filters_list: List[List[FilterMask]], **kwargs: Optional[Any]) -> List[dict]:
         """
         Method for acquring entity_data for multiple entities.
         :param entity_type: Entity type.
-        :param filters: A list of Filtermasks declaring constraints.
+        :param filters_list: A list of lists of Filtermasks declaring constraints. Each separate list of Filtermasks describes 'OR'-constraints for one entry.
         :param kwargs: Arbitrary keyword arguments.
             'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
         :return: Target entity data.
         """
         with self.session_factory() as session:
             result = session.query(self.model[entity_type]).filter(or_(and_(
-                *self.convert_filters(entity_type, filter_mask)) for filter_mask in filters)).all()
+                *self.convert_filters(entity_type, filters)) for filters in filters_list)).all()
         return result
 
     # override
