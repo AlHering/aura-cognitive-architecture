@@ -229,7 +229,6 @@ class CommonEntityDataInterface(ABC):
         :param data: Entity data or list of entity data entries.
         :param batch: Flag, declaring whether data contains multiple entries. Defaults to False.
         """
-        # TODO: Allow for usage of Transformation Plugins
         if "deobfuscate" in self._gateways[entity_type] and data:
             if isinstance(data, dict):
                 for key in self._gateways[entity_type]["deobfuscate"]:
