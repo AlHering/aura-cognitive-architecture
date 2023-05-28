@@ -88,7 +88,7 @@ def get_automapped_base(engine: Engine) -> Any:
     return base
 
 
-def get_classdict_from_base(base: Any) -> dict:
+def get_classes_from_base(base: Any) -> dict:
     """
     Function for getting class dictionary for existing tables.
     :param base: Base to get classes from.
