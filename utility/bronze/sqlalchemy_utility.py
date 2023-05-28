@@ -88,6 +88,16 @@ def get_automapped_base(engine: Engine) -> Any:
     return base
 
 
+def get_classdict_from_base(base: Any) -> dict:
+    """
+    Function for getting class dictionary for existing tables.
+    :param base: Base to get classes from.
+    :return: Class dictionary, mapping entity name to ORM class.
+    """
+    return {table: base.classes[classname_for_table(base, table, base.metadata.tables[table])] for table in
+            base.metadata.tables}
+
+
 def create_mapping_for_dictionary(mapping_base: Any, entity_type: str, column_data: dict, linkage_data: dict = None, typing_translation: dict = SQLALCHEMY_TYPING_DICTIONARY) -> Any:
     """
     Function for creating database mapping from dictionary.
