@@ -9,7 +9,7 @@ from sqlalchemy import Column, String, Boolean, Integer, JSON, Text, DateTime, C
 from sqlalchemy.orm import Session, relationship
 from sqlalchemy import and_, or_, not_
 from sqlalchemy import create_engine
-from sqlalchemy.ext.automap import automap_base
+from sqlalchemy.ext.automap import automap_base, classname_for_table
 from sqlalchemy.dialects.mysql import LONGTEXT
 from sqlalchemy import orm, inspect
 from sqlalchemy.engine import create_engine, Engine
@@ -75,6 +75,17 @@ def get_session_factory(engine: Engine) -> Any:
             bind=engine,
         ),
     )
+
+
+def get_automapped_base(engine: Engine) -> Any:
+    """
+    Function for getting prepared automap base.
+    :param engine: Engine to bind session factory to.
+    :return: Automap base.
+    """
+    base = automap_base()
+    base.prepare(autoload_with=engine, reflect=True)
+    return base
 
 
 def create_mapping_for_dictionary(mapping_base: Any, entity_type: str, column_data: dict, linkage_data: dict = None, typing_translation: dict = SQLALCHEMY_TYPING_DICTIONARY) -> Any:
