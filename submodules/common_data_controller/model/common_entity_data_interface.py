@@ -208,19 +208,12 @@ class CommonEntityDataInterface(ABC):
         :param data: Entity data or list of entity data entries.
         :param batch: Flag, declaring whether data contains multiple entries. Defaults to False.
         """
-        # TODO: Allow for usage of Transformation Plugins
         if "obfuscate" in self._gateways[entity_type] and data:
-            if isinstance(data, dict):
-                for key in self._gateways[entity_type]["obfuscate"]:
-                    data[key] = self._gateways[entity_type]["obfuscate"][key](
-                        data, key)
-            elif not batch:
-                for key in self._gateways[entity_type]["obfuscate"]:
-                    setattr(
-                        data, key, self._gateways[entity_type]["obfuscate"][key](data, key))
+            if batch:
+                for entry in data:
+                    self.obfuscate_entity_data(entity_type, entry)
             else:
-                for data_entry in data:
-                    self.obfuscate_entity_data(entity_type, data_entry)
+                data = self._gateways[entity_type]["obfuscate"](data)
 
     def deobfuscate_entity_data(self, entity_type: str, data: Union[dict, list, Any], batch: bool = False) -> None:
         """
@@ -230,17 +223,11 @@ class CommonEntityDataInterface(ABC):
         :param batch: Flag, declaring whether data contains multiple entries. Defaults to False.
         """
         if "deobfuscate" in self._gateways[entity_type] and data:
-            if isinstance(data, dict):
-                for key in self._gateways[entity_type]["deobfuscate"]:
-                    data[key] = self._gateways[entity_type]["deobfuscate"][key](
-                        data, key)
-            elif not batch:
-                for key in self._gateways[entity_type]["deobfuscate"]:
-                    setattr(
-                        data, key, self._gateways[entity_type]["deobfuscate"][key](data, key))
+            if batch:
+                for entry in data:
+                    self.deobfuscate_entity_data(entity_type, entry)
             else:
-                for data_entry in data:
-                    self.deobfuscate_entity_data(entity_type, data_entry)
+                data = self._gateways[entity_type]["deobfuscate"](data)
 
     def filters_from_data(self, entity_type: str, data: Any) -> list:
         """
@@ -250,10 +237,10 @@ class CommonEntityDataInterface(ABC):
         :return: Filter masks for data.
         """
         if self.cache["keys"].get(entity_type, False):
-            return [[key, "==", data[key] if isinstance(data, dict) else getattr(data, key)] for key in
-                    self.cache["keys"][entity_type]]
+            return FilterMask([[key, "==", data[key] if isinstance(data, dict) else getattr(data, key)] for key in
+                               self.cache["keys"][entity_type]])
         else:
-            return [[key, "==", data[key] if isinstance(data, dict) else getattr(data, key)] for key in data]
+            return FilterMask([[key, "==", data[key] if isinstance(data, dict) else getattr(data, key)] for key in data])
 
     def data_to_dictionary(self, entity_type: str, data: Any) -> dict:
         """
