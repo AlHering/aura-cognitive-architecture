@@ -5,6 +5,7 @@
 *            (c) 2022 Alexander Hering             *
 ****************************************************
 """
+import datetime
 from sqlalchemy import Column, String, Boolean, Integer, JSON, Text, DateTime, CHAR, ForeignKey, Table, Float, BLOB, TEXT
 from sqlalchemy.orm import Session, relationship
 from sqlalchemy import and_, or_, not_
@@ -33,6 +34,21 @@ SQLALCHEMY_TYPING_DICTIONARY = {
     "longtext": Text,
     "float_": Float,
     "float": Float,
+}
+
+
+# Conversion dictionary for Python typing
+PYTHON_TYPING_DICTIONARY = {
+    "int": int,
+    "dict": dict,
+    "datetime": datetime.datetime,
+    "str": str,
+    "text": str,
+    "bool": bool,
+    "char": chr,
+    "longtext": str,
+    "float": float,
+    "blob": bytes
 }
 
 
