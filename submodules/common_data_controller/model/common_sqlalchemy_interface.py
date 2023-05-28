@@ -299,7 +299,7 @@ class SQLAlchemyEntityInterface(CommonEntityDataInterface):
                                     [filter_mask[2] for filter_mask in source_filters if filter_mask[0] == primary_key][
                                         0]])
 
-            target_filters = set([sql_utility.python_typing_dictionary[target_key[0]](elem["target_key"]) for elem in
+            target_filters = set([sqlalchemy_utility.PYTHON_TYPING_DICTIONARY[target_key[0]](elem["target_key"]) for elem in
                                   self.get_batch("PDM_MANUAL_LINKAGE", [pdm_filters])])
             target_filters = [[target_key[1], "==", elem]
                               for elem in target_filters]
