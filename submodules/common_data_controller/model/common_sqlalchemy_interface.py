@@ -8,7 +8,7 @@
 import copy
 from sqlalchemy import and_, or_, not_
 from typing import Optional, Any, List, Union
-from ..static_utility import sql_utility
+from ..static_utility import sqlalchemy_utility
 from ..static_utility.filter_mask import FilterMask
 from ..static_utility.dictionary_utility import get_filter_depth
 from ..static_utility.comparison_utility import COMPARISON_METHOD_DICTIONARY as CMD
@@ -81,10 +81,10 @@ class SQLAlchemyEntityInterface(CommonEntityDataInterface):
         :param view_profiles: Visual representation profiles.
         """
         super().__init__(environment_profile, entity_profiles, linkage_profiles, view_profiles)
-        self.base = sql_utility.DECLARATIVE_BASE()
-        self.engine = sql_utility.get_engine(environment_profile["arguments"]["database"],
-                                             encoding=environment_profile["arguments"].get("encoding", "utf-8"))
-        self.model = {}
+        self.engine = sqlalchemy_utility.get_engine(environment_profile["arguments"]["database"],
+                                                    encoding=environment_profile["arguments"].get("encoding", "utf-8"))
+        self.base = sqlalchemy_utility.get_automapped_base(self.engine)
+        self.model = sqlalchemy_utility.get_classes_from_base(self.base)
         self.session_factory = None
 
     """
@@ -98,13 +98,15 @@ class SQLAlchemyEntityInterface(CommonEntityDataInterface):
         # add profile for manual linking
         global PDM_MANUAL_LINKAGE
         self._entity_profiles["PDM_MANUAL_LINKAGE"] = PDM_MANUAL_LINKAGE
+
         # add dataclasses, based off of with schema args enriched profiles, to model
-        for profile in self._entity_profiles:
+        for profile in [p for p in self._entity_profiles if p not in self.model]:
             self._create_dataclass(profile)
 
         # create infrastructure and define session factory
         self.base.metadata.create_all(self.engine)
-        self.session_factory = sql_utility.get_session_factory(self.engine)
+        self.session_factory = sqlalchemy_utility.get_session_factory(
+            self.engine)
 
     def _create_dataclass(self, entity_type: str) -> None:
         """
@@ -129,8 +131,8 @@ class SQLAlchemyEntityInterface(CommonEntityDataInterface):
                 mapping_profile[key]["schema_args"]["autoincrement"] = mapping_profile[key]["autoincrement"]
             if "unique" in mapping_profile[key]:
                 mapping_profile[key]["schema_args"]["unique"] = mapping_profile[key]["unique"]
-        self.model[entity_type] = sql_utility.create_mapping_for_dictionary(self.base, entity_type, mapping_profile,
-                                                                            self._linkage_profiles)
+        self.model[entity_type] = sqlalchemy_utility.create_mapping_for_dictionary(self.base, entity_type, mapping_profile,
+                                                                                   self._linkage_profiles)
 
     """
     Gateway methods
