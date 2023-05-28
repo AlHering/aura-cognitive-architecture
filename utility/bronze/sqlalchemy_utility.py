@@ -98,7 +98,7 @@ def get_classes_from_base(base: Any) -> dict:
             base.metadata.tables}
 
 
-def create_mapping_for_dictionary(mapping_base: Any, entity_type: str, column_data: dict, linkage_data: dict = None, typing_translation: dict = SQLALCHEMY_TYPING_DICTIONARY) -> Any:
+def create_mapping_from_dictionary(mapping_base: Any, entity_type: str, column_data: dict, linkage_data: dict = None, typing_translation: dict = SQLALCHEMY_TYPING_DICTIONARY) -> Any:
     """
     Function for creating database mapping from dictionary.
     :param mapping_base: Mapping base class.
