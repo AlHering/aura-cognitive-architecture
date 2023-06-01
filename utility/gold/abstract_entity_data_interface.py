@@ -274,9 +274,9 @@ class EntityDataInterface(ABC):
     """
 
     @abstractmethod
-    def _get_obj(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
+    def get_obj(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
         """
-        Abstract method for acquring entity_data.
+        Abstract method for acquring entity data.
         :param entity_type: Entity type.
         :param filters: A list of Filtermasks declaring constraints.
         :param kwargs: Arbitrary keyword arguments.
@@ -288,7 +288,7 @@ class EntityDataInterface(ABC):
     @handle_gateways(filter_index=2, data_index=None)
     def get(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
         """
-        Abstract method for acquring entity_data.
+        Abstract method for acquring entity data.
         :param entity_type: Entity type.
         :param filters: A list of Filtermasks declaring constraints.
         :param kwargs: Arbitrary keyword arguments.
@@ -300,7 +300,7 @@ class EntityDataInterface(ABC):
     @abstractmethod
     def _post_obj(self, entity_type: str, entity_data: dict, **kwargs: Optional[Any]) -> Optional[Any]:
         """
-        Abstract method for adding new entity.
+        Abstract method for adding a new entity.
         :param entity_type: Entity type.
         :param entity_data: Dictionary containing entity data.
         :param kwargs: Arbitrary keyword arguments.
@@ -312,7 +312,7 @@ class EntityDataInterface(ABC):
     @handle_gateways(filter_index=None, data_index=2)
     def post(self, entity_type: str, entity_data: dict, **kwargs: Optional[Any]) -> Optional[Any]:
         """
-        Abstract method for adding new entity.
+        Abstract method for adding a new entity.
         :param entity_type: Entity type.
         :param entity_data: Dictionary containing entity data.
         :param kwargs: Arbitrary keyword arguments.
@@ -324,7 +324,7 @@ class EntityDataInterface(ABC):
     @abstractmethod
     def _patch_obj(self, entity_type: str, filters: List[FilterMask], entity_data: dict, **kwargs: Optional[Any]) -> Optional[Any]:
         """
-        Abstract method for patching existing entity.
+        Abstract method for patching an existing entity.
         :param entity_type: Entity type.
         :param filters: A list of Filtermasks declaring constraints.
         :param entity_data: Dictionary containing entity data.
@@ -337,7 +337,7 @@ class EntityDataInterface(ABC):
     @handle_gateways(filter_index=2, data_index=3)
     def patch(self, entity_type: str, filters: List[FilterMask], entity_data: dict, **kwargs: Optional[Any]) -> Optional[Any]:
         """
-        Abstract method for patching existing entity.
+        Abstract method for patching an existing entity.
         :param entity_type: Entity type.
         :param filters: A list of Filtermasks declaring constraints.
         :param entity_data: Dictionary containing entity data.
@@ -350,7 +350,7 @@ class EntityDataInterface(ABC):
     @abstractmethod
     def _delete_obj(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
         """
-        Abstract method for deleting entity.
+        Abstract method for deleting an entity.
         :param entity_type: Entity type.
         :param filters: A list of Filtermasks declaring constraints.
         :param kwargs: Arbitrary keyword arguments.
