@@ -8,4 +8,3 @@ A modular frontend is crucial to the project beeing a "workbench". It will allow
 With Docker (and other containerization-solutions) as the foundation of modern DevOps work and allowing for environment-agnostic and highly scalable solutions with optimized CI/CD-pipelines, it will be used as base for this project.
 The idea is to abstract away a large portion of backend functionality inside containers to keep the focus on developing the interfaces. 
 With a well planned and implemented interface, different solutions can be containerized (if not already available as containers) and evaluated against each other.
-
