@@ -22,7 +22,7 @@ def get_authorization_token(password: str) -> str:
     return hashlib.sha256(password.encode('utf-8')).hexdigest()
 
 
-def handle_gateways(filter_index: int = None, data_index: int = None) -> Any:
+def handle_gateways(filter_index: int = None, data_index: int = None, object_index: int = None) -> Any:
     """
     Decorator method for wrapping interfacing methods and handling defaults, obfuscation and deobuscation.
     :param filter_index: Index of filter argument.
@@ -259,67 +259,87 @@ class EntityDataInterface(ABC):
         else:
             return FilterMask([[key, "==", data[key] if isinstance(data, dict) else getattr(data, key)] for key in data])
 
-    def data_to_dictionary(self, entity_type: str, data: Any) -> dict:
+    def obj_to_dictionary(self, entity_type: str, obj: Any) -> dict:
         """
         Method for transforming data object to dictionary.
         :param entity_type: Entity type.
         :param data: Data object.
         :return: Dictionary, representing data object.
         """
-        return data if isinstance(data, dict) else {key: getattr(data, key) for key in
-                                                    self._entity_profiles[entity_type] if key != "#meta"}
+        return obj if isinstance(obj, dict) else {key: getattr(obj, key) for key in
+                                                  self._entity_profiles[entity_type] if key != "#meta"}
 
     """
     Interfacing methods
     """
 
     @abstractmethod
-    def get_obj(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
+    @handle_gateways(filter_index=2, data_index=None, object_index=None)
+    def _get_as_obj(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
         """
-        Abstract method for acquring entity data.
+        Abstract method for acquring entity as object.
         :param entity_type: Entity type.
         :param filters: A list of Filtermasks declaring constraints.
         :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
-        :return: Target entity data.
+        :return: Target entity.
         """
         pass
-
-    @handle_gateways(filter_index=2, data_index=None)
-    def get(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
-        """
-        Abstract method for acquring entity data.
-        :param entity_type: Entity type.
-        :param filters: A list of Filtermasks declaring constraints.
-        :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
-        :return: Target entity data.
-        """
-        return self._get_obj(entity_type, filters, **kwargs)
 
     @abstractmethod
-    def _post_obj(self, entity_type: str, entity_data: dict, **kwargs: Optional[Any]) -> Optional[Any]:
+    @handle_gateways(filter_index=2, data_index=None, object_index=None)
+    def _get_as_dict(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[dict]:
+        """
+        Abstract method for acquring entity data.
+        :param entity_type: Entity type.
+        :param filters: A list of Filtermasks declaring constraints.
+        :param kwargs: Arbitrary keyword arguments.
+        :return: Target entity data.
+        """
+        pass
+
+    @abstractmethod
+    def get(self, *args: Optional[Any], **kwargs: Optional[Any]) -> Optional[Any]:
+        """
+        Abstract method for acquring entity.
+        :param args: Arbitrary arguments.
+        :param kwargs: Arbitrary keyword arguments.
+        :return: Target entity if existing, else None.
+        """
+        pass
+
+    @abstractmethod
+    @handle_gateways(filter_index=None, data_index=None, object_index=2)
+    def _post_obj(self, entity_type: str, entity: Any, **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Abstract method for adding a new entity.
         :param entity_type: Entity type.
-        :param entity_data: Dictionary containing entity data.
+        :param entity: Entity object.
         :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
         :return: Target entity data if existing, else None.
         """
         pass
 
-    @handle_gateways(filter_index=None, data_index=2)
-    def post(self, entity_type: str, entity_data: dict, **kwargs: Optional[Any]) -> Optional[Any]:
+    @abstractmethod
+    @handle_gateways(filter_index=2, data_index=None, object_index=None)
+    def _post_data(self, entity_type: str, entity_data: dict, **kwargs: Optional[Any]) -> Optional[dict]:
         """
-        Abstract method for adding a new entity.
+        Abstract method for adding a new entity data.
         :param entity_type: Entity type.
         :param entity_data: Dictionary containing entity data.
         :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
         :return: Target entity data if existing, else None.
         """
-        return self._post_obj(entity_type, entity_data, **kwargs)
+        pass
+
+    @abstractmethod
+    def post(self, *args: Optional[Any], **kwargs: Optional[Any]) -> Optional[Any]:
+        """
+        Abstract method for adding a new entity.
+        :param args: Arbitrary arguments.
+        :param kwargs: Arbitrary keyword arguments.
+        :return: Target entity if existing, else None.
+        """
+        pass
 
     @abstractmethod
     def _patch_obj(self, entity_type: str, filters: List[FilterMask], entity_data: dict, **kwargs: Optional[Any]) -> Optional[Any]:
@@ -329,7 +349,6 @@ class EntityDataInterface(ABC):
         :param filters: A list of Filtermasks declaring constraints.
         :param entity_data: Dictionary containing entity data.
         :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
         :return: Target entity data if existing, else None.
         """
         pass
@@ -342,7 +361,6 @@ class EntityDataInterface(ABC):
         :param filters: A list of Filtermasks declaring constraints.
         :param entity_data: Dictionary containing entity data.
         :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
         :return: Target entity data if existing, else None.
         """
         return self._patch_obj(entity_type, filters, entity_data, **kwargs)
@@ -354,7 +372,6 @@ class EntityDataInterface(ABC):
         :param entity_type: Entity type.
         :param filters: A list of Filtermasks declaring constraints.
         :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
         :return: Target entity data if existing, else None.
         """
         pass
@@ -366,7 +383,6 @@ class EntityDataInterface(ABC):
         :param entity_type: Entity type.
         :param filters: A list of Filtermasks declaring constraints.
         :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
         :return: Target entity data if existing, else None.
         """
         return self._delete_obj(entity_type, filters, **kwargs)
@@ -378,7 +394,6 @@ class EntityDataInterface(ABC):
         :param entity_type: Entity type.
         :param filters_list: :param filters_list: A list of lists of Filtermasks declaring constraints. Each separate list of Filtermasks describes 'OR'-constraints for one entry.
         :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
         :return: Target entity data entries.
         """
         results = [self._get_obj(entity_type, filters, **kwargs)
@@ -392,7 +407,6 @@ class EntityDataInterface(ABC):
         :param entity_type: Entity type.
         :param entity_data: List of dictionaries containing entity data.
         :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
         :return: Target entity data entries.
         """
         results = [self._post_obj(entity_type, entity_data_entry, **kwargs)
@@ -408,7 +422,6 @@ class EntityDataInterface(ABC):
         :param filters_list: A list of lists of Filtermasks declaring constraints. Each separate list of Filtermasks describes 'OR'-constraints for one entry.
         :param entity_data: List of dictionaries containing entity data.
         :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
         :return: Target entity data entries.
         """
         results = [self._patch_obj(entity_type, *entry, **kwargs)
@@ -422,7 +435,6 @@ class EntityDataInterface(ABC):
         :param entity_type: Entity type.
         :param filters_list: A list of lists of Filtermasks declaring constraints. Each separate list of Filtermasks describes 'OR'-constraints for one entry.
         :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
         :return: Target entity data entries.
         """
         results = [self._delete_obj(
@@ -442,7 +454,6 @@ class EntityDataInterface(ABC):
         :param source_filters: Source filters.
         :param target_filters: Target filters. Defaults to empty list.
         :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
         :return: Linked entities.
         """
         pass
@@ -456,7 +467,6 @@ class EntityDataInterface(ABC):
         :param linkage: Linkage profile.
         :param target_filters: Target Filtermasks declaring constraints. Defaults to empty list.
         :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
         :return: Linked entities.
         """
         pass
