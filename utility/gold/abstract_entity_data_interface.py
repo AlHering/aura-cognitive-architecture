@@ -321,9 +321,9 @@ class EntityDataInterface(ABC):
 
     @abstractmethod
     @handle_gateways(filter_index=2, data_index=None, object_index=None)
-    def _post_data(self, entity_type: str, entity_data: dict, **kwargs: Optional[Any]) -> Optional[dict]:
+    def _post_dict(self, entity_type: str, entity_data: dict, **kwargs: Optional[Any]) -> Optional[dict]:
         """
-        Abstract method for adding a new entity data.
+        Abstract method for adding a new entity data as dictionary.
         :param entity_type: Entity type.
         :param entity_data: Dictionary containing entity data.
         :param kwargs: Arbitrary keyword arguments.
@@ -342,31 +342,56 @@ class EntityDataInterface(ABC):
         pass
 
     @abstractmethod
-    def _patch_obj(self, entity_type: str, filters: List[FilterMask], entity_data: dict, **kwargs: Optional[Any]) -> Optional[Any]:
+    @handle_gateways(filter_index=None, data_index=3, object_index=2)
+    def _patch_obj(self, entity_type: str, entity: Any, patch: Optional[dict] = None, **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Abstract method for patching an existing entity.
         :param entity_type: Entity type.
-        :param filters: A list of Filtermasks declaring constraints.
-        :param entity_data: Dictionary containing entity data.
+        :param entity: Entity object to patch.
+        :param patch: Patch as dictionary, if entity is not already patched.
         :param kwargs: Arbitrary keyword arguments.
         :return: Target entity data if existing, else None.
         """
         pass
 
-    @handle_gateways(filter_index=2, data_index=3)
-    def patch(self, entity_type: str, filters: List[FilterMask], entity_data: dict, **kwargs: Optional[Any]) -> Optional[Any]:
+    @abstractmethod
+    @handle_gateways(filter_index=2, data_index=3, object_index=None)
+    def _patch_dict(self, entity_type: str, filters: List[FilterMask], patch: dict, **kwargs: Optional[Any]) -> Optional[dict]:
         """
-        Abstract method for patching an existing entity.
+        Abstract method for patching an existing entity data.
         :param entity_type: Entity type.
         :param filters: A list of Filtermasks declaring constraints.
-        :param entity_data: Dictionary containing entity data.
+        :param patch: Patch as dictionary.
         :param kwargs: Arbitrary keyword arguments.
         :return: Target entity data if existing, else None.
         """
-        return self._patch_obj(entity_type, filters, entity_data, **kwargs)
+        pass
 
     @abstractmethod
-    def _delete_obj(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
+    def patch(self, *args: Optional[Any], **kwargs: Optional[Any]) -> Optional[Any]:
+        """
+        Abstract method for patching an existing entity.
+        :param args: Arbitrary arguments.
+        :param kwargs: Arbitrary keyword arguments.
+        :return: Target entity if existing, else None.
+        """
+        pass
+
+    @abstractmethod
+    @handle_gateways(filter_index=None, data_index=None, object_index=2)
+    def _delete_obj(self, entity_type: str, entity: Any, **kwargs: Optional[Any]) -> Optional[Any]:
+        """
+        Abstract method for deleting an entity.
+        :param entity_type: Entity type.
+        :param entity: Entity to delete.
+        :param kwargs: Arbitrary keyword arguments.
+        :return: Target entity data if existing, else None.
+        """
+        pass
+
+    @abstractmethod
+    @handle_gateways(filter_index=2, data_index=None, object_index=None)
+    def _delete_data(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Abstract method for deleting an entity.
         :param entity_type: Entity type.
@@ -376,96 +401,79 @@ class EntityDataInterface(ABC):
         """
         pass
 
-    @handle_gateways(filter_index=2, data_index=None)
-    def delete(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
+    @abstractmethod
+    def delete(self, *args: Optional[Any], **kwargs: Optional[Any]) -> Optional[Any]:
         """
-        Abstract method for deleting entity.
-        :param entity_type: Entity type.
-        :param filters: A list of Filtermasks declaring constraints.
+        Abstract method for deleting an entity.
+        :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
-        :return: Target entity data if existing, else None.
+        :return: Target entity if existing, else None.
         """
-        return self._delete_obj(entity_type, filters, **kwargs)
+        pass
 
-    @handle_gateways(filter_index=2, data_index=None)
-    def get_batch(self, entity_type: str, filters_list: List[List[FilterMask]], **kwargs: Optional[Any]) -> List[Any]:
-        """
-        Abstract method for acquring entity_data for multiple entities.
-        :param entity_type: Entity type.
-        :param filters_list: :param filters_list: A list of lists of Filtermasks declaring constraints. Each separate list of Filtermasks describes 'OR'-constraints for one entry.
-        :param kwargs: Arbitrary keyword arguments.
-        :return: Target entity data entries.
-        """
-        results = [self._get_obj(entity_type, filters, **kwargs)
-                   for filters in filters_list]
-        return [entry for entry in results if entry is not None]
+    """
+    Batch interfacing methods
+    """
 
-    @handle_gateways(filter_index=None, data_index=2)
-    def post_batch(self, entity_type: str, entity_data: List[dict], **kwargs: Optional[Any]) -> List[Any]:
+    @abstractmethod
+    def get_batch(self, *args: Optional[Any], **kwargs: Optional[Any]) -> List[Any]:
         """
-        Abstract method for adding multiple entities.
-        :param entity_type: Entity type.
-        :param entity_data: List of dictionaries containing entity data.
+        Abstract method for getting entities as batch.
+        :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
-        :return: Target entity data entries.
+        :return: Target entity if existing, else None.
         """
-        results = [self._post_obj(entity_type, entity_data_entry, **kwargs)
-                   for entity_data_entry in entity_data]
-        return [entry for entry in results if entry is not None]
+        pass
 
-    @handle_gateways(filter_index=2, data_index=3)
-    def patch_batch(self, entity_type: str, filters_list: List[List[FilterMask]], entity_data: List[dict], **kwargs: Optional[Any]) -> \
-            List[Any]:
+    @abstractmethod
+    def post_batch(self, *args: Optional[Any], **kwargs: Optional[Any]) -> List[Any]:
         """
-        Abstract method for patching multiple existing entities.
-        :param entity_type: Entity type.
-        :param filters_list: A list of lists of Filtermasks declaring constraints. Each separate list of Filtermasks describes 'OR'-constraints for one entry.
-        :param entity_data: List of dictionaries containing entity data.
+        Abstract method for posting entities as batch.
+        :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
-        :return: Target entity data entries.
+        :return: Target entity if existing, else None.
         """
-        results = [self._patch_obj(entity_type, *entry, **kwargs)
-                   for entry in zip(filters_list, entity_data)]
-        return [entry for entry in results if entry is not None]
+        pass
 
-    @handle_gateways(filter_index=2, data_index=None)
-    def delete_batch(self, entity_type: str, filters_list: List[List[FilterMask]], **kwargs: Optional[Any]) -> List[Any]:
+    @abstractmethod
+    def patch_batch(self, *args: Optional[Any], **kwargs: Optional[Any]) -> List[Any]:
         """
-        Abstract method for deleting multiple entities.
-        :param entity_type: Entity type.
-        :param filters_list: A list of lists of Filtermasks declaring constraints. Each separate list of Filtermasks describes 'OR'-constraints for one entry.
+        Abstract method for patching entities as batch.
+        :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
-        :return: Target entity data entries.
+        :return: Target entity if existing, else None.
         """
-        results = [self._delete_obj(
-            entity_type, filters, **kwargs) for filters in filters_list]
-        return [entry for entry in results if entry is not None]
+        pass
+
+    @abstractmethod
+    def delete_batch(self, *args: Optional[Any], **kwargs: Optional[Any]) -> List[Any]:
+        """
+        Abstract method for getting entities as batch.
+        :param args: Arbitrary arguments.
+        :param kwargs: Arbitrary keyword arguments.
+        :return: Target entity if existing, else None.
+        """
+        pass
 
     """
     Linkage methods
     """
 
     @abstractmethod
-    def get_linked_entities(self, linkage: str, source_filters: List[FilterMask], target_filters: list = [],
-                            **kwargs: Optional[Any]) -> list:
+    def get_linked_entities(self, linkage: str, *args: Optional[Any], **kwargs: Optional[Any]) -> List[Any]:
         """
         Method for getting linked entities.
-        :param linkage: Linkage profile.
-        :param source_filters: Source filters.
-        :param target_filters: Target filters. Defaults to empty list.
+        :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
         :return: Linked entities.
         """
         pass
 
     @abstractmethod
-    def link_entities(self, linkage: str, source_filters: List[FilterMask], target_filters: List[FilterMask] = [],
-                      **kwargs: Optional[Any]) -> None:
+    def link_entities(self, linkage: str, *args: Optional[Any], **kwargs: Optional[Any]) -> None:
         """
         Method for getting linked entities.
-        :param source_filters: Source Filtermasks declaring constraints.
-        :param linkage: Linkage profile.
-        :param target_filters: Target Filtermasks declaring constraints. Defaults to empty list.
+        :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
         :return: Linked entities.
         """
