@@ -20,6 +20,9 @@ from sqlalchemy.exc import ProgrammingError, OperationalError
 from typing import List, Union, Any, Optional
 
 
+# Supported dialects
+SUPPORTED_DIALECTS = ["sqlite", "mysql",
+                      "mssql", "postgresql", "mariadb", "oracle"]
 # Conversion dictionary for SQLAlchemy typing
 SQLALCHEMY_TYPING_DICTIONARY = {
     "int": Integer,
