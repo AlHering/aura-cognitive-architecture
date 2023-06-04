@@ -48,3 +48,14 @@ class AbstractAPIWrapper(abc.ABC):
         :return: Metadata for given model ID.
         """
         pass
+
+    @abc.abstractmethod
+    def normalize_metadata(self, metadata: dict, *args: Optional[List], **kwargs: Optional[dict]) -> dict:
+        """
+        Abstract method for normalizing metadata.
+        :param metadata: Metadata.
+        :param args: Arbitrary arguments.
+        :param kwargs: Arbitrary keyword arguments.
+        :return: Normalized metadata.
+        """
+        pass
