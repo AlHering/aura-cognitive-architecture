@@ -159,13 +159,13 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
     """
 
     # override
+    @handle_gateways(filter_index=2, data_index=None, object_index=None)
     def _get_obj(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Method for acquring entity as object.
         :param entity_type: Entity type.
         :param filters: A list of Filtermasks declaring constraints.
         :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
         :return: Target entity.
         """
         with self.session_factory() as session:
@@ -175,124 +175,207 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         return result
 
     # override
-    def _post_obj(self, entity_type: str, entity_data: dict, **kwargs: Optional[Any]) -> Optional[Any]:
+    def _get_dict(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[dict]:
         """
-        Method for adding new entity.
-        :param entity_type: Entity type.
-        :param entity_data: Dictionary containing entity data.
-        :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
-        :return: Target entity data.
-        """
-        with self.session_factory() as session:
-            result = self.model[entity_type](**entity_data)
-            session.add(result)
-            session.commit()
-            session.refresh(result)
-        return result
-
-    # override
-    def _patch_obj(self, entity_type: str, filters: List[FilterMask], entity_data: dict, **kwargs: Optional[Any]) -> Optional[Any]:
-        """
-        Method for patching existing entity.
-        :param entity_type: Entity type.
-        :param filters: A list of Filtermasks declaring constraints.
-        :param entity_data: Dictionary containing entity data.
-        :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
-        :return: Target entity data.
-        """
-        with self.session_factory() as session:
-            result = session.query(self.model[entity_type]).filter(
-                *self.convert_filters(entity_type, filters)
-            ).first()
-            if result:
-                for arg in entity_data:
-                    setattr(result, arg, entity_data[arg])
-                session.commit()
-                session.refresh(result)
-            return result
-
-    # override
-    def _delete_obj(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
-        """
-        Method for deleting entity.
+        Method for acquring entity data.
         :param entity_type: Entity type.
         :param filters: A list of Filtermasks declaring constraints.
         :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
         :return: Target entity data.
         """
-        with self.session_factory() as session:
-            result = session.query(self.model[entity_type]).filter(
-                *self.convert_filters(entity_type, filters)
-            ).first()
-            if result:
-                session.delete(result)
-                session.commit()
-        return result
+        return [self.obj_to_dictionary(entity_type, obj) for obj in self._get_as_obj(entity_type, filters, **kwargs)]
 
     # override
-    @handle_gateways(filter_index=2, data_index=None)
-    def get_batch(self, entity_type: str, filters_list: List[List[FilterMask]], **kwargs: Optional[Any]) -> List[dict]:
+    def get(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
         """
-        Method for acquring entity_data for multiple entities.
+        Method for acquring entity.
         :param entity_type: Entity type.
-        :param filters_list: A list of lists of Filtermasks declaring constraints. Each separate list of Filtermasks describes 'OR'-constraints for one entry.
+        :param filters: A list of Filtermasks declaring constraints.
         :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
-        :return: Target entity data.
+        :return: Target entity if existing, else None.
         """
-        with self.session_factory() as session:
-            result = session.query(self.model[entity_type]).filter(or_(and_(
-                *self.convert_filters(entity_type, filters)) for filters in filters_list)).all()
-        return result
+        if kwargs.get("mode", "dict"):
+            return self._get_as_dict(entity_type, filters, **kwargs)
+        else:
+
+            return self._get_as_obj(entity_type, filters, **kwargs)
 
     # override
-    @handle_gateways(filter_index=None, data_index=2)
-    def post_batch(self, entity_type: str, entity_data: List[dict], **kwargs: Optional[Any]) -> List[dict]:
+    @handle_gateways(filter_index=None, data_index=None, object_index=2)
+    def _post_obj(self, entity_type: str, entity: Any, **kwargs: Optional[Any]) -> Optional[Any]:
         """
-        Method for adding multiple entities.
+        Method for adding a new entity.
         :param entity_type: Entity type.
-        :param entity_data: List of dictionaries containing entity data.
+        :param entity: Entity object.
         :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
-        :return: Target entity data.
+        :return: Target entity data if existing, else None.
         """
         with self.session_factory() as session:
-            result = session.bulk_insert_mappings(
-                self.model[entity_type], entity_data)
+            session.add(entity)
             session.commit()
-        return result
+            session.refresh(entity)
+        return entity
+
+    # override
+    def _post_dict(self, entity_type: str, entity_data: dict, **kwargs: Optional[Any]) -> Optional[dict]:
+        """
+        Method for adding a new entity data as dictionary.
+        :param entity_type: Entity type.
+        :param entity_data: Dictionary containing entity data.
+        :param kwargs: Arbitrary keyword arguments.
+        :return: Target entity data if existing, else None.
+        """
+        entity = self.model[entity_type](**entity_data)
+        return self._post_obj(entity_type, entity, **kwargs)
+
+    # override
+    def post(self, *args: Optional[Any], **kwargs: Optional[Any]) -> Optional[Any]:
+        """
+        Method for adding a new entity.
+        :param args: Arbitrary arguments.
+        :param kwargs: Arbitrary keyword arguments.
+        :return: Target entity if existing, else None.
+        """
+        if kwargs.get("return_as_dict", False):
+            return self._post_dict(entity_type, filters, **kwargs)
+        else:
+
+            return self._post_obj(entity_type, filters, **kwargs)
+
+    # override
+    @handle_gateways(filter_index=None, data_index=3, object_index=2)
+    def _patch_obj(self, entity_type: str, entity: Any, patch: Optional[dict] = None, **kwargs: Optional[Any]) -> Optional[Any]:
+        """
+        Method for patching an existing entity.
+        :param entity_type: Entity type.
+        :param entity: Entity object to patch.
+        :param patch: Patch as dictionary, if entity is not already patched.
+        :param kwargs: Arbitrary keyword arguments.
+        :return: Target entity data if existing, else None.
+        """
+        pass
+
+    # override
+    @handle_gateways(filter_index=2, data_index=3, object_index=None)
+    def _patch_dict(self, entity_type: str, filters: List[FilterMask], patch: dict, **kwargs: Optional[Any]) -> Optional[dict]:
+        """
+        Method for patching an existing entity data.
+        :param entity_type: Entity type.
+        :param filters: A list of Filtermasks declaring constraints.
+        :param patch: Patch as dictionary.
+        :param kwargs: Arbitrary keyword arguments.
+        :return: Target entity data if existing, else None.
+        """
+        pass
+
+    # override
+    def patch(self, *args: Optional[Any], **kwargs: Optional[Any]) -> Optional[Any]:
+        """
+        Method for patching an existing entity.
+        :param args: Arbitrary arguments.
+        :param kwargs: Arbitrary keyword arguments.
+        :return: Target entity if existing, else None.
+        """
+        pass
+
+    # override
+    @handle_gateways(filter_index=None, data_index=None, object_index=2)
+    def _delete_obj(self, entity_type: str, entity: Any, **kwargs: Optional[Any]) -> Optional[Any]:
+        """
+        Method for deleting an entity.
+        :param entity_type: Entity type.
+        :param entity: Entity to delete.
+        :param kwargs: Arbitrary keyword arguments.
+        :return: Target entity data if existing, else None.
+        """
+        pass
+
+    # override
+    @handle_gateways(filter_index=2, data_index=None, object_index=None)
+    def _delete_data(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
+        """
+        Method for deleting an entity.
+        :param entity_type: Entity type.
+        :param filters: A list of Filtermasks declaring constraints.
+        :param kwargs: Arbitrary keyword arguments.
+        :return: Target entity data if existing, else None.
+        """
+        pass
+
+    # override
+    def delete(self, *args: Optional[Any], **kwargs: Optional[Any]) -> Optional[Any]:
+        """
+        Method for deleting an entity.
+        :param args: Arbitrary arguments.
+        :param kwargs: Arbitrary keyword arguments.
+        :return: Target entity if existing, else None.
+        """
+        pass
+
+    """
+    Batch interfacing methods
+    """
+
+    # override
+    def get_batch(self, *args: Optional[Any], **kwargs: Optional[Any]) -> List[Any]:
+        """
+        Method for getting entities as batch.
+        :param args: Arbitrary arguments.
+        :param kwargs: Arbitrary keyword arguments.
+        :return: Target entity if existing, else None.
+        """
+        pass
+
+    # override
+    def post_batch(self, *args: Optional[Any], **kwargs: Optional[Any]) -> List[Any]:
+        """
+        Method for posting entities as batch.
+        :param args: Arbitrary arguments.
+        :param kwargs: Arbitrary keyword arguments.
+        :return: Target entity if existing, else None.
+        """
+        pass
+
+    # override
+    def patch_batch(self, *args: Optional[Any], **kwargs: Optional[Any]) -> List[Any]:
+        """
+        Method for patching entities as batch.
+        :param args: Arbitrary arguments.
+        :param kwargs: Arbitrary keyword arguments.
+        :return: Target entity if existing, else None.
+        """
+        pass
+
+    # override
+    def delete_batch(self, *args: Optional[Any], **kwargs: Optional[Any]) -> List[Any]:
+        """
+        Method for getting entities as batch.
+        :param args: Arbitrary arguments.
+        :param kwargs: Arbitrary keyword arguments.
+        :return: Target entity if existing, else None.
+        """
+        pass
 
     """
     Linkage methods
     """
 
     # override
-    def get_linked_entities(self, linkage: str, source_filters: List[FilterMask], target_filters: List[FilterMask] = [],
-                            **kwargs: Optional[Any]) -> list:
+    def get_linked_entities(self, linkage: str, *args: Optional[Any], **kwargs: Optional[Any]) -> List[Any]:
         """
         Method for getting linked entities.
-        :param linkage: Linkage profile.
-        :param source_filters: Source FilterMasks.
-        :param target_filters: Target FilterMasks. Defaults to empty list.
+        :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
         :return: Linked entities.
         """
         pass
 
     # override
-    def link_entities(self, linkage: str, source_filters: List[FilterMask], target_filters: List[FilterMask] = [],
-                      **kwargs: Optional[Any]) -> None:
+    def link_entities(self, linkage: str, *args: Optional[Any], **kwargs: Optional[Any]) -> None:
         """
         Method for getting linked entities.
-        :param source_filters: Source FilterMasks.
-        :param linkage: Linkage profile.
-        :param target_filters: Target FilterMasks. Defaults to empty list.
+        :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
-            'return_as_dict': Flag declaring, whether return values should be formatted as dictionaries.
         :return: Linked entities.
         """
         pass
