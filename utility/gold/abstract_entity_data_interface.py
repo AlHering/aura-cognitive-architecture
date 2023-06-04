@@ -64,12 +64,6 @@ def handle_gateways(filter_index: int = None, data_index: int = None, object_ind
 
                     res = instance.deobfuscate_entity_data(
                         entity_type, func(*args, **kwargs), batch)
-                    if kwargs.get("return_as_dict", False):
-                        if batch:
-                            res = [instance.data_to_dictionary(
-                                entry) for entry in res]
-                        else:
-                            res = instance.data_to_dictionary(res)
             return res
 
         return func_wrapper
