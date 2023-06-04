@@ -93,6 +93,9 @@ class EntityDataInterface(ABC):
         self._linkage_profiles = copy.deepcopy(linkage_profiles)
         self._view_profiles = copy.deepcopy(view_profiles)
 
+        self.handle_as_objects = self._environment_profile.get(
+            "handle_as_objects", False)
+
         self.cache = {
             "keys": {
                 entity_type: [] for entity_type in self._entity_profiles
