@@ -269,7 +269,7 @@ class EntityDataInterface(ABC):
 
     @abstractmethod
     @handle_gateways(filter_index=2, data_index=None, object_index=None)
-    def _get_as_obj(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
+    def _get_obj(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Abstract method for acquring entity as object.
         :param entity_type: Entity type.
@@ -281,7 +281,7 @@ class EntityDataInterface(ABC):
 
     @abstractmethod
     @handle_gateways(filter_index=2, data_index=None, object_index=None)
-    def _get_as_dict(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[dict]:
+    def _get_dict(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[dict]:
         """
         Abstract method for acquring entity data.
         :param entity_type: Entity type.
