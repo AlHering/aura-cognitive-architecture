@@ -17,12 +17,6 @@ class AbstractModelHandler(object):
     model services and managing updates, organization and usage.
     """
 
-    def __init__(self) -> None:
-        """
-        Initiation method.
-        """
-        pass
-
     def import_data(self, import_path: str) -> None:
         """
         Method for importing data.
@@ -87,4 +81,9 @@ class StabeDiffusionModelHandler(AbstractModelHandler):
     """
     Class representing Model Handler for Stable Diffusion models.
     """
-    pass
+
+    def __init__(self) -> None:
+        """
+        Initiation method.
+        """
+        pass
