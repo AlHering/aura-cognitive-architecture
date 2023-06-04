@@ -300,6 +300,7 @@ class EntityDataInterface(ABC):
         Abstract method for acquring entity.
         :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
+            'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entity if existing, else None.
         """
         pass
@@ -334,6 +335,7 @@ class EntityDataInterface(ABC):
         Abstract method for adding a new entity.
         :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
+            'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entity if existing, else None.
         """
         pass
@@ -370,6 +372,7 @@ class EntityDataInterface(ABC):
         Abstract method for patching an existing entity.
         :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
+            'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entity if existing, else None.
         """
         pass
@@ -404,6 +407,7 @@ class EntityDataInterface(ABC):
         Abstract method for deleting an entity.
         :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
+            'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entity if existing, else None.
         """
         pass
@@ -418,6 +422,7 @@ class EntityDataInterface(ABC):
         Abstract method for getting entities as batch.
         :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
+            'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entity if existing, else None.
         """
         pass
@@ -428,6 +433,7 @@ class EntityDataInterface(ABC):
         Abstract method for posting entities as batch.
         :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
+            'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entity if existing, else None.
         """
         pass
@@ -438,6 +444,7 @@ class EntityDataInterface(ABC):
         Abstract method for patching entities as batch.
         :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
+            'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entity if existing, else None.
         """
         pass
@@ -448,6 +455,7 @@ class EntityDataInterface(ABC):
         Abstract method for getting entities as batch.
         :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
+            'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entity if existing, else None.
         """
         pass
