@@ -94,6 +94,9 @@ class EntityDataInterface(ABC):
         self._linkage_profiles = copy.deepcopy(linkage_profiles)
         self._view_profiles = copy.deepcopy(view_profiles)
 
+        if "targets" in self._environment_profile and self._environment_profile["targets"] != "*":
+            self._remove_untracked_entity_types()
+
         self.handle_as_objects = self._environment_profile.get(
             "handle_as_objects", False)
 
@@ -116,6 +119,22 @@ class EntityDataInterface(ABC):
         Abstract method for initiating infrastructure.
         """
         pass
+
+    def _remove_untracked_entity_types(self) -> None:
+        """
+        Method for removing untracked entity types from configuration.
+        """
+        removed_linkages = []
+        for entity_type in self._entity_profiles:
+            if entity_type not in self._environment_profile["targets"]:
+                self._entity_profiles.pop(entity_type)
+                for linkage in self._linkage_profiles:
+                    if self._linkage_profiles[linkage]["source"] == entity_type or self._linkage_profiles[linkage]["target"] == entity_type:
+                        self._linkage_profiles.pop(linkage)
+                        removed_linkages.append(linkage)
+                for view in self._view_profiles:
+                    if self._view_profiles[view]["root"] == entity_type or any(removed_linkage in self._view_profiles[view]["linkages"] for removed_linkage in removed_linkages):
+                        self._view_profiles.pop(view)
 
     def _populate_gateway_barriers(self) -> dict:
         """
