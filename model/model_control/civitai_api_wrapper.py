@@ -26,6 +26,7 @@ class CivitaiAbstractAPIWrapper(AbstractAPIWrapper):
         Initiation method.
         """
         self._logger = Logger("[CivitaiAbstractAPIWrapper]")
+        self.authorization = cfg.ENV["CIVITAI_API_KEY"]
         self.base_url = "https://civitai.com/"
         self.api_base_url = "https://civitai.com/api/v1/"
         self.model_by_versionhash_url = "https://civitai.com/api/v1/model-versions/by-hash/"
@@ -44,7 +45,7 @@ class CivitaiAbstractAPIWrapper(AbstractAPIWrapper):
         return result
 
     @internet_utility.timeout(360.0)
-    def download_image(url: str, output_path: str) -> bool:
+    def download_image(self, url: str, output_path: str) -> bool:
         """
         Method for downloading image to disk.
         :param url: Image URL.
@@ -53,7 +54,7 @@ class CivitaiAbstractAPIWrapper(AbstractAPIWrapper):
         """
         sleep(2)
         download = requests.get(url, stream=True, headers={
-                                "Authorization": cfg.CIVITAI_API_KEY})
+                                "Authorization": self.authorization})
         with open(output_path, 'wb') as file:
             shutil.copyfileobj(download.raw, file)
         del download
@@ -85,7 +86,7 @@ class CivitaiAbstractAPIWrapper(AbstractAPIWrapper):
         self._logger.info(
             f"Fetching metadata for model with '{model_id}' as '{identifier}'...")
         resp = requests.get(self.get_api_url(identifier, model_id), headers={
-                            "Authorization": cfg.CIVITAI_API_KEY})
+                            "Authorization": self.authorization})
         try:
             meta_data = json.loads(resp.content)
             if meta_data is not None and not "error" in meta_data:
