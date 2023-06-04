@@ -7,7 +7,6 @@
 """
 from typing import Any, Optional, List
 import abc
-from abstract_api_wrapper import AbstractAPIWrapper
 from ...utility.bronze import json_utility
 
 
@@ -82,3 +81,10 @@ class AbstractModelHandler(object):
         :param kwargs: Arbitrary keyword arguments.
         """
         pass
+
+
+class StabeDiffusionModelHandler(AbstractModelHandler):
+    """
+    Class representing Model Handler for Stable Diffusion models.
+    """
+    pass
