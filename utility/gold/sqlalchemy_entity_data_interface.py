@@ -120,14 +120,21 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
                    "schema_args": {
                        "primary_key": self._entity_profiles[entity_type][key].get("primary_key", False),
                        "nullable": not self._entity_profiles[entity_type][key].get("not_null", False),
-                       "comment": self._entity_profiles[entity_type][key].get("description", "")
+                       "comment": self._entity_profiles[entity_type][key].get("description", ""),
             }} for key in
                 self._entity_profiles[entity_type] if
                 key != "#meta"})
         desc = self._entity_profiles[entity_type].get(
             "#meta", {}).get("description", False)
+        schema = self._entity_profiles[entity_type].get(
+            "#meta", {}).get("schema", False)
+
+        mapping_profile["#meta"] = {}
         if desc:
-            mapping_profile["#meta"] = {"description": desc}
+            mapping_profile["#meta"]["comment"] = desc
+        if schema:
+            mapping_profile["#meta"]["schema"] = schema
+
         for key in mapping_profile:
             if "autoincrement" in mapping_profile[key]:
                 mapping_profile[key]["schema_args"]["autoincrement"] = mapping_profile[key]["autoincrement"]
