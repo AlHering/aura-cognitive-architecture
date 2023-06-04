@@ -42,8 +42,10 @@ Example:
 The entity configuration is formatted as a JSON/dictionary profile.
 An entity profile includes
 - a meta-data block (under '#meta') containing
+  - "description": An entity-level description.
+  - "schema": A schema for organizational entity separation.
   - "keep_deleted": Whether to keep deleted entries (in these cases you should add an attributed flag, with a default for delete calls to mark the soft-deleted entries)
-  - "authorize", declaring an SHA-256 hash of the authorization password, only include if reading and writing needs to be authorized (use Physical Data Dictionary function `hash_password` if you are unsure about the hashing)
+  - "authorize", declaring an SHA-256 hash of the authorization password, only include if reading and writing needs to be authorized (use function `get_authorization_token` if you are unsure about the hashing)
   - "obfuscate", declaring a obfuscator plugin or an obfuscation lambda function as string
   - "deobfuscate", declaring a obfuscator plugin or an deobfuscation lambda function as string
 - a key-value pair for each attribute containing a dictionary on the value side with
