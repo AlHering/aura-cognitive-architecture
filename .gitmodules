@@ -1,0 +1,8 @@
+[submodule "submodules/common_plugin_controller"]
+	path = submodules/common_plugin_controller
+	url = git@github.com:AlHering/common_plugin_controller.git
+	branch = development
+[submodule "submodules/common_flask_frontend"]
+	path = submodules/common_flask_frontend
+	url = git@github.com:AlHering/common_flask_frontend.git
+	branch = development

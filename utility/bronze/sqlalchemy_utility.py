@@ -5,6 +5,7 @@
 *            (c) 2022 Alexander Hering             *
 ****************************************************
 """
+import copy
 from sqlalchemy import Column, String, Boolean, Integer, JSON, Text, DateTime, CHAR, ForeignKey, Table, Float, BLOB, TEXT
 from sqlalchemy.orm import Session, relationship
 from sqlalchemy import and_, or_, not_
@@ -113,8 +114,8 @@ def create_mapping_from_dictionary(mapping_base: Any, entity_type: str, column_d
     """
     class_data = {"__tablename__": entity_type}
     desc = column_data.get("#meta", {}).get("description", False)
-    if desc:
-        class_data["__table_args__"] = {"comment": desc}
+    if column_data.get("#meta", False):
+        class_data["__table_args__"] = copy.deepcopy(column_data["#meta"])
 
     class_data.update(
         {
