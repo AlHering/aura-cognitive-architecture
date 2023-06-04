@@ -7,7 +7,7 @@
 """
 
 
-class ModelHandler(object):
+class AbstractModelHandler(object):
     """
     Class, representing ML Model Handler objects.
     A Model Handler utilizes API Wrappers for collecting metadata and downloading assets from
