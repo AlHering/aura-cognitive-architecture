@@ -162,4 +162,4 @@ data/
 docs/literature
 docs/todo
 data/aura_cognitive_architecture.db
-.env
+configuration/*.env
