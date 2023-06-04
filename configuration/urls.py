@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 ****************************************************
-*                CommonDataController              *  
-*          (c) 2021-2023 Alexander Hering          *
+*           aura-cognitive-architecture
+*            (c) 2023 Alexander Hering             *
 ****************************************************
 """

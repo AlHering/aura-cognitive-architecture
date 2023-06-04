@@ -160,3 +160,6 @@ cython_debug/
 # Custom additions
 data/
 docs/literature
+docs/todo
+data/aura_cognitive_architecture.db
+configuration/*.env

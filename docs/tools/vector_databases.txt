@@ -1,0 +1,16 @@
+# Vector databases
+As the name gives away, vector databases provide a database infrastructure, specifically made for storing vectors.
+The key functionality is storing vectors and retrieving them based on a reference vector by similarity (distance).
+As such, they are crucial for introducing large amounts of knowledge (content rather than behaviour) to e.g. a Large Language Model via Semantic Search.
+
+A vector database of word embeddings can cluster semantically close words together, e.g. "Queen" and "King", which might only differ in a single dimension (gender).
+On the other hand, the word "Auto" should not be very close to either of them but very close to "wheel"/"tire" and "engine". Now, we can be pretty sure, that "Carriage" should lie somewhere between "Queen"/"King" and "Auto".
+However, semantical vector representations of words have very high dimensions, so in practice, the distance between words is very complex.
+
+## Tools
+- ChromaDB
+- Pinecone
+- Weviate
+- Postgres/pgvector
+- Redis
+- Qdrant
