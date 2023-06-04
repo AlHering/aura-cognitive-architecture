@@ -18,27 +18,29 @@ def get_module(path: str, sha256: str = None) -> Optional[Any]:
     """
     Function for loading and returning module.
     :param path: Path to Python file.
-    :param sha256: SHA256 hash to check fail against. 
+    :param sha256: SHA256 hash to check file against. 
         Defaults to None in which case no check is issued.
     :return: Loaded module handle.
     """
-    module = None
     if sha256 is None or hash_with_sha256(path) == sha256:
         spec = importlib.util.spec_from_file_location("module", path)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
-    return module
+        return module
 
 
-def get_function_from_path(path: str) -> Any:
+def get_function_from_path(path: str, sha256: str = None) -> Any:
     """
     Function for loading and returning function from path.
     :param path: Path to function in the form '[path to .py-file]:[function name]'.
+    :param sha256: SHA256 hash to check file against. 
+        Defaults to None in which case no check is issued.
     :return: Loaded function.
     """
     module_path, function_name = path.split(":")
-    module = get_module(module_path)
-    return getattr(module, function_name)
+    module = get_module(module_path, sha256)
+    if module is not None:
+        return getattr(module, function_name)
 
 
 def get_lambda_function_from_string(function_string: str) -> Any:
