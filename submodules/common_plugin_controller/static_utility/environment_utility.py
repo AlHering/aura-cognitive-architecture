@@ -14,31 +14,38 @@ import importlib.util
 import traceback
 from time import sleep
 from typing import Any, List, Optional
+from hashing_utility import hash_with_sha256
 LOGGER = logging.Logger("[EnvironmentUtility]")
 # count lines for git repo: "git ls-files | grep '\.py\|\.ipynb\|\.json'"
 
 
-def get_module(path: str) -> Optional[Any]:
+def get_module(path: str, sha256: str = None) -> Optional[Any]:
     """
     Function for loading and returning module.
     :param path: Path to Python file.
+    :param sha256: SHA256 hash to check file against. 
+        Defaults to None in which case no check is issued.
     :return: Loaded module handle.
     """
-    spec = importlib.util.spec_from_file_location("module", path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+    if sha256 is None or hash_with_sha256(path) == sha256:
+        spec = importlib.util.spec_from_file_location("module", path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
 
 
-def get_function_from_path(path: str) -> Any:
+def get_function_from_path(path: str, sha256: str = None) -> Any:
     """
     Function for loading and returning function from path.
     :param path: Path to function in the form '[path to .py-file]:[function name]'.
+    :param sha256: SHA256 hash to check file against. 
+        Defaults to None in which case no check is issued.
     :return: Loaded function.
     """
     module_path, function_name = path.split(":")
-    module = get_module(module_path)
-    return getattr(module, function_name)
+    module = get_module(module_path, sha256)
+    if module is not None:
+        return getattr(module, function_name)
 
 
 def get_lambda_function_from_string(function_string: str) -> Any:
@@ -64,7 +71,8 @@ def issue_multiple_tries(function, tries=3, *args, **kwargs) -> Any:
         try:
             return function(*args, **kwargs)
         except Exception:
-            LOGGER.warning("[ERROR]" + function.__name__ + ":" + str(args) + ", " + str(kwargs) + "\n")
+            LOGGER.warning("[ERROR]" + function.__name__ +
+                           ":" + str(args) + ", " + str(kwargs) + "\n")
             LOGGER.warning(traceback.format_exc())
             sleep(1)
             i += 1
@@ -103,14 +111,15 @@ def safely_import_package(package_name: str, version: str = None, import_name: s
             return __import__(package_name)
     except ImportError as ex:
         if not _installation_executed:
-            subprocess.check_call([sys.executable, "-m", "pip", "install", package_name_with_version])
+            subprocess.check_call(
+                [sys.executable, "-m", "pip", "install", package_name_with_version])
             return safely_import_package(package_name, version, import_name, import_path, True)
         else:
             raise ex
 
 
 def check_module_availability(package_name: str, import_name: str = None,
-                          import_path: List[str] = None) -> Optional[Any]:
+                              import_path: List[str] = None) -> Optional[Any]:
     """
     Function for checking import target availability.
     :param package_name: Package name.
