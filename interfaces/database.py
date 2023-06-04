@@ -6,22 +6,28 @@
 ****************************************************
 """
 from ..configuration import configuration as cfg
-from ..utility.bronze.sqlalchemy_utility import SUPPORTED_DIALECTS, get_engine, get_automapped_base, get_session_factory, get_classes_from_base
+from ..utility.gold.sqlalchemy_entity_data_interface import SQLAlchemyEntityInterface as DBInterface
 
 
-"""
-Database handles
-"""
-if cfg.ENV["DB_DIALECT"] not in SUPPORTED_DIALECTS:
-    raise NotImplementedError(
-        f"Dialect {cfg.ENV['DB_DIALECT']} not supported by SQLAlchemy Utility!")
-ENGINE = get_engine(cfg.ENV["DB_URL"])
-BASE = get_automapped_base(ENGINE)
-SESSION_FACTORY = get_session_factory(ENGINE)
-MODEL = get_classes_from_base(BASE)
+class ACADatabase(DBInterface):
+    """
+    Class, representing ACA Database.
+    """
 
-
-"""
-Dataclasses
-"""
-# TODO: Implement dataclasses
+    def __init__(self) -> None:
+        """
+        Initiation method.
+        """
+        super().__init__(environment_profile={
+            "backend": "database",
+            "framework": "sqlalchemy",
+            "arguments": {
+                "database": cfg.ENV["DB_URL"],
+                "dialect": cfg.ENV["DB_DIALECT"],
+                "encoding": "utf-8"
+            },
+            "targets": "*"
+        },
+            entity_profiles=cfg.ENTITY_PROFILE,
+            linkage_profiles=cfg.LINKAGE_PROFILE,
+            view_profiles=cfg.VIEW_PROFILE)
