@@ -192,15 +192,16 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         :param entity_type: Entity type.
         :param filters: A list of Filtermasks declaring constraints.
         :param kwargs: Arbitrary keyword arguments.
+            'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entity if existing, else None.
         """
-        if kwargs.get("mode", "dict"):
-            return self._get_as_dict(entity_type, filters, **kwargs)
-        else:
-
+        if kwargs.get("mode", self.handle_as_objects):
             return self._get_as_obj(entity_type, filters, **kwargs)
+        else:
+            return self._get_as_dict(entity_type, filters, **kwargs)
 
     # override
+
     @handle_gateways(filter_index=None, data_index=None, object_index=2)
     def _post_obj(self, entity_type: str, entity: Any, **kwargs: Optional[Any]) -> Optional[Any]:
         """
@@ -226,21 +227,22 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         :return: Target entity data if existing, else None.
         """
         entity = self.model[entity_type](**entity_data)
-        return self._post_obj(entity_type, entity, **kwargs)
+        return self.obj_to_dictionary(self._post_obj(entity_type, entity, **kwargs))
 
     # override
-    def post(self, *args: Optional[Any], **kwargs: Optional[Any]) -> Optional[Any]:
+    def post(self, entity_type: str, entity: Any, **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Method for adding a new entity.
-        :param args: Arbitrary arguments.
+        :param entity_type: Entity type.
+        :param entity: Entity or entity data, depending on mode.
         :param kwargs: Arbitrary keyword arguments.
+            'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entity if existing, else None.
         """
-        if kwargs.get("return_as_dict", False):
-            return self._post_dict(entity_type, filters, **kwargs)
+        if kwargs.get("mode", self.handle_as_objects):
+            return self._post_dict(entity_type, entity, **kwargs)
         else:
-
-            return self._post_obj(entity_type, filters, **kwargs)
+            return self._post_obj(entity_type, entity, **kwargs)
 
     # override
     @handle_gateways(filter_index=None, data_index=3, object_index=2)
@@ -274,6 +276,7 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         Method for patching an existing entity.
         :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
+            'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entity if existing, else None.
         """
         pass
@@ -308,6 +311,7 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         Method for deleting an entity.
         :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
+            'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entity if existing, else None.
         """
         pass
@@ -322,6 +326,7 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         Method for getting entities as batch.
         :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
+            'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entity if existing, else None.
         """
         pass
@@ -332,6 +337,7 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         Method for posting entities as batch.
         :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
+            'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entity if existing, else None.
         """
         pass
@@ -342,6 +348,7 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         Method for patching entities as batch.
         :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
+            'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entity if existing, else None.
         """
         pass
@@ -352,6 +359,7 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         Method for getting entities as batch.
         :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
+            'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entity if existing, else None.
         """
         pass
