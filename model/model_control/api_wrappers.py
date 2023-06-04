@@ -67,6 +67,24 @@ class AbstractAPIWrapper(abc.ABC):
         """
         pass
 
+    @abc.abstractmethod
+    def download_model(self, *args: Optional[List], **kwargs: Optional[dict]) -> None:
+        """
+        Abstract method for downloading a model.
+        :param args: Arbitrary arguments.
+        :param kwargs: Arbitrary keyword arguments.
+        """
+        pass
+
+    @abc.abstractmethod
+    def download_asset(self, *args: Optional[List], **kwargs: Optional[dict]) -> None:
+        """
+        Abstract method for downloading an asset.
+        :param args: Arbitrary arguments.
+        :param kwargs: Arbitrary keyword arguments.
+        """
+        pass
+
 
 class CivitaiAbstractAPIWrapper(AbstractAPIWrapper):
     """
@@ -95,25 +113,6 @@ class CivitaiAbstractAPIWrapper(AbstractAPIWrapper):
         self._logger.info("Connection was successfuly established.") if result else self._logger.warn(
             "Connection could not be established.")
         return result
-
-    @internet_utility.timeout(360.0)
-    def download_image(self, url: str, output_path: str) -> bool:
-        """
-        Method for downloading image to disk.
-        :param url: Image URL.
-        :param output_path: Output path.
-        :return: True, if process was successful, else False.
-        """
-        sleep(2)
-        download = requests.get(url, stream=True, headers={
-                                "Authorization": self.authorization})
-        with open(output_path, 'wb') as file:
-            shutil.copyfileobj(download.raw, file)
-        del download
-        if image_utility.check_image_health(output_path):
-            return True
-        else:
-            return False
 
     def get_api_url(self, identifier: str, model_id: Any, *args: Optional[List], **kwargs: Optional[dict]) -> str:
         """
@@ -159,3 +158,41 @@ class CivitaiAbstractAPIWrapper(AbstractAPIWrapper):
         """
         # TODO: Implement, once common metadata format is planned out.
         pass
+
+    def download_model(self, *args: Optional[List], **kwargs: Optional[dict]) -> None:
+        """
+        Abstract method for downloading a model.
+        :param args: Arbitrary arguments.
+        :param kwargs: Arbitrary keyword arguments.
+        """
+        pass
+
+    def download_asset(self, asset_type: str, url: str, output_path: str) -> bool:
+        """
+        Method for downloading assets to disk.
+        :param asset_type: Asset type.
+        :param url: Asset URL.
+        :param output_path: Output path.
+        :return: True, if process was successful, else False.
+        """
+        if asset_type == "image":
+            return self.downloading_image(url, output_path)
+
+    @internet_utility.timeout(360.0)
+    def download_image(self, url: str, output_path: str) -> bool:
+        """
+        Method for downloading images to disk.
+        :param url: Image URL.
+        :param output_path: Output path.
+        :return: True, if process was successful, else False.
+        """
+        sleep(2)
+        download = requests.get(url, stream=True, headers={
+                                "Authorization": self.authorization})
+        with open(output_path, 'wb') as file:
+            shutil.copyfileobj(download.raw, file)
+        del download
+        if image_utility.check_image_health(output_path):
+            return True
+        else:
+            return False

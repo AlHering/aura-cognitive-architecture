@@ -58,24 +58,6 @@ class AbstractModelHandler(object):
         """
         pass
 
-    @abc.abstractmethod
-    def download_model(self, *args: Optional[List], **kwargs: Optional[dict]) -> None:
-        """
-        Abstract method for downloading a model.
-        :param args: Arbitrary arguments.
-        :param kwargs: Arbitrary keyword arguments.
-        """
-        pass
-
-    @abc.abstractmethod
-    def download_asset(self, *args: Optional[List], **kwargs: Optional[dict]) -> None:
-        """
-        Abstract method for downloading an asset.
-        :param args: Arbitrary arguments.
-        :param kwargs: Arbitrary keyword arguments.
-        """
-        pass
-
 
 class StabeDiffusionModelHandler(AbstractModelHandler):
     """
