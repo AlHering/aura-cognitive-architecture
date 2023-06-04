@@ -9,7 +9,7 @@ import os
 from dotenv import load_dotenv
 import paths as PATHS
 import urls as URLS
-from data_backend import ENTITY_PROFILE, LINKAGE_PROFILE, VIEW_PROFILE
+from configuration.database_configuration import ENTITY_PROFILE, LINKAGE_PROFILE, VIEW_PROFILE
 
 
 """
