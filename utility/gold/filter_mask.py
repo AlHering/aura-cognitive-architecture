@@ -5,6 +5,7 @@
 *            (c) 2023 Alexander Hering             *
 ****************************************************
 """
+# In-depth documentation can be found under utility/docs/entity_data_interfaces.md
 import copy
 from typing import Union, Any, List
 from . import dictionary_utility

@@ -5,8 +5,7 @@
 *            (c) 2023 Alexander Hering             *
 ****************************************************
 """
-
-
+# In-depth documentation can be found under utility/docs/entity_data_interfaces.md
 import copy
 from sqlalchemy import and_, or_, not_
 from typing import Optional, Any, List, Union
