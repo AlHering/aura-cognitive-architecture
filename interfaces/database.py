@@ -19,7 +19,14 @@ class ACADatabase(DBInterface):
         Initiation method.
         """
         super().__init__(environment_profile={
-
+            "backend": "database",
+            "framework": "sqlalchemy",
+            "arguments": {
+                "database": cfg.ENV["DB_URL"],
+                "dialect": cfg.ENV["DB_DIALECT"],
+                "encoding": "utf-8"
+            },
+            "targets": "*"
         },
             entity_profiles=cfg.ENTITY_PROFILE,
             linkage_profiles=cfg.LINKAGE_PROFILE,
