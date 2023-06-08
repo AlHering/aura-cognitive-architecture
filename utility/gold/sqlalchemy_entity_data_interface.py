@@ -148,7 +148,7 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
 
     def convert_filters(self, entity_type: str, filters: List[FilterMask]) -> list:
         """
-        Method for coverting common filters to SQLAlchemy-filter expressions.
+        Method for coverting common FilterMasks to SQLAlchemy-filter expressions.
         :param entity_type: Entity type.
         :param filters: A list of Filtermasks declaring constraints.
         :return: Filter expressions.
