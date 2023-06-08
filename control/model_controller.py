@@ -19,3 +19,9 @@ class ModelController(object):
         Initiation method.
         """
         pass
+
+    def _integrate_into_frontend() -> None:
+        """
+        Internal method for integrating Model Controller functionality into Common Flask Frontend.
+        """
+        pass
