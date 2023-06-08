@@ -20,11 +20,12 @@ class AbstractModelHandler(object):
     model services and managing updates, organization and usage.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, api_wrapper_dict: dict) -> None:
         """
         Initiation method.
+        :param api_wrapper_dict: Dictionary, mapping source to API wrapper.
         """
-        pass
+        self._apis = api_wrapper_dict
 
     def import_data(self, import_path: str) -> None:
         """
