@@ -27,22 +27,23 @@ class AbstractModelHandler(object):
         :param db_interface: Entity Data Interface.
         :param api_wrapper_dict: Dictionary, mapping source to API wrapper.
         """
-        self.db = db_interface
+        self._db = db_interface
         self._apis = api_wrapper_dict
+        self._cache = {}
 
     def import_data(self, import_path: str) -> None:
         """
         Method for importing data.
         :param import_path: Import path.
         """
-        self.cache = json_utility.load(import_path)
+        self._cache = json_utility.load(import_path)
 
     def export_data(self, export_path: str) -> None:
         """
         Method for exporting data.
         :param export_path: Export path.
         """
-        json_utility.save(self.cache, export_path)
+        json_utility.save(self._cache, export_path)
 
     @abc.abstractmethod
     def load_model_folder(self, *args: Optional[List], **kwargs: Optional[dict]) -> None:
