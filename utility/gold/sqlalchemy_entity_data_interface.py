@@ -69,7 +69,7 @@ MANUAL_LINKAGE = {
 
 class SQLAlchemyEntityInterface(EntityDataInterface):
     """
-    Class representing SQLAlchemy Entity Interface.
+    Class, representing SQLAlchemy Entity Interface.
     """
 
     def __init__(self, environment_profile: dict, entity_profiles: dict, linkage_profiles: dict,

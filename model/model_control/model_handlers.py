@@ -80,7 +80,7 @@ class AbstractModelHandler(object):
 
 class StabeDiffusionModelHandler(AbstractModelHandler):
     """
-    Class representing Model Handler for Stable Diffusion models.
+    Class, representing Model Handler for Stable Diffusion models.
     """
 
     def __init__(self) -> None:
