@@ -322,17 +322,19 @@ class EntityDataInterface(ABC):
                for filtermasks in filters]
         return [entry for entry in res if res is not None]
 
-    @abstractmethod
     def get(self, batch: bool, *args: Optional[Any], **kwargs: Optional[Any]) -> Optional[Any]:
         """
-        Abstract method for acquring entities.
+        Method for acquring entities.
         :param batch: Flag, declaring whether to handle operation as batch-operation.
         :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
             'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entities.
         """
-        pass
+        if batch:
+            self._get_batch(*args, **kwargs)
+        else:
+            self._get(*args, **kwargs)
 
     @abstractmethod
     @handle_gateways(filter_index=None, data_index=2, skip=False)
@@ -359,17 +361,19 @@ class EntityDataInterface(ABC):
                for entity in entities]
         return [entry for entry in res if res is not None]
 
-    @abstractmethod
     def post(self, batch: bool, *args: Optional[Any], **kwargs: Optional[Any]) -> Optional[Any]:
         """
-        Abstract method for adding a new entity.
+        Method for adding a new entity.
         :param batch: Flag, declaring whether to handle operation as batch-operation.
         :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
             'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entity if existing, else None.
         """
-        pass
+        if batch:
+            self._post_batch(*args, **kwargs)
+        else:
+            self._post(*args, **kwargs)
 
     @abstractmethod
     @handle_gateways(filter_index=None, data_index=[2, 3], skip=False)
@@ -402,14 +406,17 @@ class EntityDataInterface(ABC):
     @abstractmethod
     def patch(self, batch: bool, *args: Optional[Any], **kwargs: Optional[Any]) -> Optional[Any]:
         """
-        Abstract method for patching an existing entities.
+        Method for patching an existing entities.
         :param batch: Flag, declaring whether to handle operation as batch-operation.
         :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
             'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entities.
         """
-        pass
+        if batch:
+            self._patch_batch(*args, **kwargs)
+        else:
+            self._patch(*args, **kwargs)
 
     @abstractmethod
     @handle_gateways(filter_index=None, data_index=2, skip=False)
@@ -440,14 +447,17 @@ class EntityDataInterface(ABC):
     @abstractmethod
     def delete(self, batch: bool, *args: Optional[Any], **kwargs: Optional[Any]) -> Optional[Any]:
         """
-        Abstract method for deleting entities.
+        Method for deleting entities.
         :param batch: Flag, declaring whether to handle operation as batch-operation.
         :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
             'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entities.
         """
-        pass
+        if batch:
+            self._delete_batch(*args, **kwargs)
+        else:
+            self._delete(*args, **kwargs)
 
     """
     Linkage methods
