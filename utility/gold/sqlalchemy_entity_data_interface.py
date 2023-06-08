@@ -170,6 +170,7 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         """
         Method for acquring entity as object.
         :param entity_type: Entity type.
+        :param batch: Flag, declaring whether to handle operation as batch-operation.
         :param filters: A list of Filtermasks declaring constraints.
         :param kwargs: Arbitrary keyword arguments.
         :return: Target entity.
@@ -181,10 +182,11 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         return result
 
     # override
-    def _get_dict(self, entity_type: str, filters: List[FilterMask], batch: bool, **kwargs: Optional[Any]) -> Optional[dict]:
+    def _get_dict(self, entity_type: str, batch: bool, filters: List[FilterMask],  **kwargs: Optional[Any]) -> Optional[dict]:
         """
         Method for acquring entity data.
         :param entity_type: Entity type.
+        :param batch: Flag, declaring whether to handle operation as batch-operation.
         :param filters: A list of Filtermasks declaring constraints.
         :param kwargs: Arbitrary keyword arguments.
         :return: Target entity data.
@@ -194,10 +196,11 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         return res[0] if res else None
 
     # override
-    def get(self, entity_type: str, filters: List[FilterMask], batch: bool = True, **kwargs: Optional[Any]) -> Optional[Any]:
+    def get(self, entity_type: str, batch: bool, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Method for acquring entity.
         :param entity_type: Entity type.
+        :param batch: Flag, declaring whether to handle operation as batch-operation.
         :param filters: A list of Filtermasks declaring constraints.
         :param batch: Flag, declaring whether to handle operation as batch-operation.
         :param kwargs: Arbitrary keyword arguments.
@@ -322,7 +325,7 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         pass
 
     # override
-    def delete(self, *args: Optional[Any], **kwargs: Optional[Any]) -> Optional[Any]:
+    def delete(self, *args: Optional[Any], batch: bool, **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Method for deleting an entity.
         :param args: Arbitrary arguments.
