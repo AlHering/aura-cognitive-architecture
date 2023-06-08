@@ -5,11 +5,12 @@
 *            (c) 2023 Alexander Hering             *
 ****************************************************
 """
+from typing import List, Any
 from ..configuration import configuration as cfg
 from ..utility.gold.sqlalchemy_entity_data_interface import SQLAlchemyEntityInterface as DBInterface
 
 
-class ACADatabase(DBInterface):
+class ModelDatabase(DBInterface):
     """
     Class, representing ACA Database.
     """
@@ -31,3 +32,8 @@ class ACADatabase(DBInterface):
             entity_profiles=cfg.ENTITY_PROFILE,
             linkage_profiles=cfg.LINKAGE_PROFILE,
             view_profiles=cfg.VIEW_PROFILE)
+
+    def get_tracked_model_files() -> List[Any]:
+        """
+        Method for getting tracked model Files
+        """
