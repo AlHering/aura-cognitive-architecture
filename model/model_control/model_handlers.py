@@ -94,3 +94,35 @@ class StabeDiffusionModelHandler(AbstractModelHandler):
         :param api_wrapper_dict: Dictionary, mapping source to API wrapper.
         """
         super().__init__(db_interface, api_wrapper_dict)
+
+    def load_model_folder(self, *args: Optional[List], **kwargs: Optional[dict]) -> None:
+        """
+        Method for loading model folder.
+        :param args: Arbitrary arguments.
+        :param kwargs: Arbitrary keyword arguments.
+        """
+        pass
+
+    def update_metadata(self, *args: Optional[List], **kwargs: Optional[dict]) -> None:
+        """
+        Method for updating cached metadata.
+        :param args: Arbitrary arguments.
+        :param kwargs: Arbitrary keyword arguments.
+        """
+        pass
+
+    def organize_models(self, *args: Optional[List], **kwargs: Optional[dict]) -> None:
+        """
+        Method for organizing local models.
+        :param args: Arbitrary arguments.
+        :param kwargs: Arbitrary keyword arguments.
+        """
+        pass
+
+    def move_model(self, *args: Optional[List], **kwargs: Optional[dict]) -> None:
+        """
+        Method for moving local model and adjusting metadata.
+        :param args: Arbitrary arguments.
+        :param kwargs: Arbitrary keyword arguments.
+        """
+        pass
