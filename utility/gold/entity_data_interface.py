@@ -312,13 +312,15 @@ class EntityDataInterface(ABC):
     @handle_gateways(filter_index=2, data_index=None, skip=True)
     def _get_batch(self, entity_type: str, filters: List[List[FilterMask]], **kwargs: Optional[Any]) -> List[Any]:
         """
-        Abstract method for acquring entities as object.
+        Method for acquring entities as object.
         :param entity_type: Entity type.
         :param filters: A list of lists of Filtermasks declaring constraints.
         :param kwargs: Arbitrary keyword arguments.
         :return: Target entities.
         """
-        pass
+        res = [self._get(entity_type, filtermasks,  **kwargs)
+               for filtermasks in filters]
+        return [entry for entry in res if res is not None]
 
     @abstractmethod
     def get(self, batch: bool, *args: Optional[Any], **kwargs: Optional[Any]) -> Optional[Any]:
@@ -344,17 +346,18 @@ class EntityDataInterface(ABC):
         """
         pass
 
-    @abstractmethod
     @handle_gateways(filter_index=None, data_index=2, skip=True)
     def _post_batch(self, entity_type: str, entities: List[Any], **kwargs: Optional[Any]) -> List[Any]:
         """
-        Abstract method for adding new entities.
+        Method for adding new entities.
         :param entity_type: Entity type.
         :param entity: Entity objects.
         :param kwargs: Arbitrary keyword arguments.
         :return: Target entities.
         """
-        pass
+        res = [self._post(entity_type, entity,  **kwargs)
+               for entity in entities]
+        return [entry for entry in res if res is not None]
 
     @abstractmethod
     def post(self, batch: bool, *args: Optional[Any], **kwargs: Optional[Any]) -> Optional[Any]:
@@ -383,16 +386,18 @@ class EntityDataInterface(ABC):
 
     @abstractmethod
     @handle_gateways(filter_index=None, data_index=[2, 3], skip=True)
-    def _patch_batch(self, entity_type: str, entities: List[Any], patch: List[dict] = [], **kwargs: Optional[Any]) -> List[Any]:
+    def _patch_batch(self, entity_type: str, entities: List[Any], patches: List[dict] = [], **kwargs: Optional[Any]) -> List[Any]:
         """
-        Abstract method for patching existing entities.
+        Method for patching existing entities.
         :param entity_type: Entity type.
         :param entity: Entity objects to patch.
-        :param patch: Patches as dictionaries, if entities are not already patched.
+        :param patches: Patches as dictionaries, if entities are not already patched.
         :param kwargs: Arbitrary keyword arguments.
         :return: Target entities.
         """
-        pass
+        res = [self._patch(entity_type, entity, patches[index] if patches else None, **kwargs)
+               for index, entity in enumerate(entities)]
+        return [entry for entry in res if res is not None]
 
     @abstractmethod
     def patch(self, batch: bool, *args: Optional[Any], **kwargs: Optional[Any]) -> Optional[Any]:
@@ -428,7 +433,9 @@ class EntityDataInterface(ABC):
         :param kwargs: Arbitrary keyword arguments.
         :return: Target entities.
         """
-        pass
+        res = [self._delete(entity_type, entity,  **kwargs)
+               for entity in entities]
+        return [entry for entry in res if res is not None]
 
     @abstractmethod
     def delete(self, batch: bool, *args: Optional[Any], **kwargs: Optional[Any]) -> Optional[Any]:
