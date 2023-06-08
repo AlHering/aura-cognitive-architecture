@@ -7,7 +7,10 @@
 """
 from typing import Any, Optional, List
 import abc
-from ...utility.bronze import json_utility
+from ...configuration import configuration as cfg
+import os
+import copy
+from ...utility.bronze import json_utility, hashing_utility, dictionary_utility
 
 
 class AbstractModelHandler(object):
@@ -16,6 +19,12 @@ class AbstractModelHandler(object):
     A Model Handler utilizes API Wrappers for collecting metadata and downloading assets from
     model services and managing updates, organization and usage.
     """
+
+    def __init__(self) -> None:
+        """
+        Initiation method.
+        """
+        pass
 
     def import_data(self, import_path: str) -> None:
         """
@@ -53,6 +62,15 @@ class AbstractModelHandler(object):
     def organize_models(self, *args: Optional[List], **kwargs: Optional[dict]) -> None:
         """
         Abstract method for organizing local models.
+        :param args: Arbitrary arguments.
+        :param kwargs: Arbitrary keyword arguments.
+        """
+        pass
+
+    @abc.abstractmethod
+    def move_model(self, *args: Optional[List], **kwargs: Optional[dict]) -> None:
+        """
+        Abstract method for moving local model and adjusting metadata.
         :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
         """
