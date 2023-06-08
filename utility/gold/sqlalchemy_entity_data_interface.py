@@ -13,7 +13,7 @@ from ..bronze import sqlalchemy_utility
 from .filter_mask import FilterMask
 from ..bronze.dictionary_utility import get_filter_depth
 from ..bronze.comparison_utility import COMPARISON_METHOD_DICTIONARY as CMD
-from .abstract_entity_data_interface import EntityDataInterface, handle_gateways
+from .entity_data_interface import EntityDataInterface, handle_gateways
 
 # Dictionary, mapping filter types of filters to SQLAlchemy-compatible filters
 SQLALCHEMY_FILTER_CONVERTER = {
@@ -165,8 +165,8 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
     """
 
     # override
-    @handle_gateways(filter_index=2, data_index=None, object_index=None)
-    def _get_obj(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
+    @handle_gateways(batch_index=2, filter_index=3, data_index=None, object_index=None)
+    def _get_obj(self, entity_type: str, batch: bool, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Method for acquring entity as object.
         :param entity_type: Entity type.
@@ -181,7 +181,7 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         return result
 
     # override
-    def _get_dict(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[dict]:
+    def _get_dict(self, entity_type: str, filters: List[FilterMask], batch: bool, **kwargs: Optional[Any]) -> Optional[dict]:
         """
         Method for acquring entity data.
         :param entity_type: Entity type.
@@ -189,14 +189,17 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         :param kwargs: Arbitrary keyword arguments.
         :return: Target entity data.
         """
-        return [self.obj_to_dictionary(entity_type, obj) for obj in self._get_as_obj(entity_type, filters, **kwargs)]
+        res = [self.obj_to_dictionary(entity_type, obj) for obj in self._get_as_obj(
+            entity_type, filters, **kwargs)]
+        return res[0] if res else None
 
     # override
-    def get(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
+    def get(self, entity_type: str, filters: List[FilterMask], batch: bool = True, **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Method for acquring entity.
         :param entity_type: Entity type.
         :param filters: A list of Filtermasks declaring constraints.
+        :param batch: Flag, declaring whether to handle operation as batch-operation.
         :param kwargs: Arbitrary keyword arguments.
             'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entity if existing, else None.
@@ -207,11 +210,11 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
             return self._get_as_dict(entity_type, filters, **kwargs)
 
     # override
-
-    @handle_gateways(filter_index=None, data_index=None, object_index=2)
-    def _post_obj(self, entity_type: str, entity: Any, **kwargs: Optional[Any]) -> Optional[Any]:
+    @handle_gateways(batch_index=2, filter_index=None, data_index=None, object_index=3)
+    def _post_obj(self, entity_type: str, batch: bool, entity: Any, **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Method for adding a new entity.
+        :param batch: Flag, declaring whether to handle operation as batch-operation.
         :param entity_type: Entity type.
         :param entity: Entity object.
         :param kwargs: Arbitrary keyword arguments.
@@ -224,10 +227,11 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         return entity
 
     # override
-    def _post_dict(self, entity_type: str, entity_data: dict, **kwargs: Optional[Any]) -> Optional[dict]:
+    def _post_dict(self, entity_type: str, batch: bool, entity_data: dict, **kwargs: Optional[Any]) -> Optional[dict]:
         """
         Method for adding a new entity data as dictionary.
         :param entity_type: Entity type.
+        :param batch: Flag, declaring whether to handle operation as batch-operation.
         :param entity_data: Dictionary containing entity data.
         :param kwargs: Arbitrary keyword arguments.
         :return: Target entity data if existing, else None.
@@ -236,10 +240,11 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         return self.obj_to_dictionary(self._post_obj(entity_type, entity, **kwargs))
 
     # override
-    def post(self, entity_type: str, entity: Any, **kwargs: Optional[Any]) -> Optional[Any]:
+    def post(self, entity_type: str, batch: str, entity: Any, **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Method for adding a new entity.
         :param entity_type: Entity type.
+        :param batch: Flag, declaring whether to handle operation as batch-operation.
         :param entity: Entity or entity data, depending on mode.
         :param kwargs: Arbitrary keyword arguments.
             'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
@@ -251,11 +256,12 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
             return self._post_obj(entity_type, entity, **kwargs)
 
     # override
-    @handle_gateways(filter_index=None, data_index=3, object_index=2)
-    def _patch_obj(self, entity_type: str, entity: Any, patch: Optional[dict] = None, **kwargs: Optional[Any]) -> Optional[Any]:
+    @handle_gateways(batch_index=2, filter_index=None, data_index=4, object_index=3)
+    def _patch_obj(self, entity_type: str, batch: bool, entity: Any, patch: Optional[dict] = None, **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Method for patching an existing entity.
         :param entity_type: Entity type.
+        :param batch: Flag, declaring whether to handle operation as batch-operation.
         :param entity: Entity object to patch.
         :param patch: Patch as dictionary, if entity is not already patched.
         :param kwargs: Arbitrary keyword arguments.
@@ -264,11 +270,12 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         pass
 
     # override
-    @handle_gateways(filter_index=2, data_index=3, object_index=None)
-    def _patch_dict(self, entity_type: str, filters: List[FilterMask], patch: dict, **kwargs: Optional[Any]) -> Optional[dict]:
+    @handle_gateways(batch_index=2, filter_index=3, data_index=4, object_index=None)
+    def _patch_dict(self, entity_type: str, batch: bool, filters: List[FilterMask], patch: dict, **kwargs: Optional[Any]) -> Optional[dict]:
         """
         Method for patching an existing entity data.
         :param entity_type: Entity type.
+        :param batch: Flag, declaring whether to handle operation as batch-operation.
         :param filters: A list of Filtermasks declaring constraints.
         :param patch: Patch as dictionary.
         :param kwargs: Arbitrary keyword arguments.
@@ -277,10 +284,11 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         pass
 
     # override
-    def patch(self, *args: Optional[Any], **kwargs: Optional[Any]) -> Optional[Any]:
+    def patch(self, *args: Optional[Any], batch: bool, **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Method for patching an existing entity.
         :param args: Arbitrary arguments.
+        :param batch: Flag, declaring whether to handle operation as batch-operation.
         :param kwargs: Arbitrary keyword arguments.
             'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entity if existing, else None.
@@ -288,11 +296,12 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         pass
 
     # override
-    @handle_gateways(filter_index=None, data_index=None, object_index=2)
-    def _delete_obj(self, entity_type: str, entity: Any, **kwargs: Optional[Any]) -> Optional[Any]:
+    @handle_gateways(batch_index=2, filter_index=None, data_index=None, object_index=3)
+    def _delete_obj(self, entity_type: str, batch: bool, entity: Any, **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Method for deleting an entity.
         :param entity_type: Entity type.
+        :param batch: Flag, declaring whether to handle operation as batch-operation.
         :param entity: Entity to delete.
         :param kwargs: Arbitrary keyword arguments.
         :return: Target entity data if existing, else None.
@@ -300,11 +309,12 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         pass
 
     # override
-    @handle_gateways(filter_index=2, data_index=None, object_index=None)
-    def _delete_data(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
+    @handle_gateways(batch_index=2, filter_index=3, data_index=None, object_index=None)
+    def _delete_dict(self, entity_type: str, batch: bool, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Method for deleting an entity.
         :param entity_type: Entity type.
+        :param batch: Flag, declaring whether to handle operation as batch-operation.
         :param filters: A list of Filtermasks declaring constraints.
         :param kwargs: Arbitrary keyword arguments.
         :return: Target entity data if existing, else None.
@@ -316,54 +326,7 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         """
         Method for deleting an entity.
         :param args: Arbitrary arguments.
-        :param kwargs: Arbitrary keyword arguments.
-            'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
-        :return: Target entity if existing, else None.
-        """
-        pass
-
-    """
-    Batch interfacing methods
-    """
-
-    # override
-    def get_batch(self, *args: Optional[Any], **kwargs: Optional[Any]) -> List[Any]:
-        """
-        Method for getting entities as batch.
-        :param args: Arbitrary arguments.
-        :param kwargs: Arbitrary keyword arguments.
-            'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
-        :return: Target entity if existing, else None.
-        """
-        pass
-
-    # override
-    def post_batch(self, *args: Optional[Any], **kwargs: Optional[Any]) -> List[Any]:
-        """
-        Method for posting entities as batch.
-        :param args: Arbitrary arguments.
-        :param kwargs: Arbitrary keyword arguments.
-            'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
-        :return: Target entity if existing, else None.
-        """
-        pass
-
-    # override
-    def patch_batch(self, *args: Optional[Any], **kwargs: Optional[Any]) -> List[Any]:
-        """
-        Method for patching entities as batch.
-        :param args: Arbitrary arguments.
-        :param kwargs: Arbitrary keyword arguments.
-            'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
-        :return: Target entity if existing, else None.
-        """
-        pass
-
-    # override
-    def delete_batch(self, *args: Optional[Any], **kwargs: Optional[Any]) -> List[Any]:
-        """
-        Method for getting entities as batch.
-        :param args: Arbitrary arguments.
+        :param batch: Flag, declaring whether to handle operation as batch-operation.
         :param kwargs: Arbitrary keyword arguments.
             'mode': Overwrite class flag for handling entities via modes "as_object", "as_dict".
         :return: Target entity if existing, else None.
