@@ -164,7 +164,7 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
     Interfacing methods
     """
     # override
-    @handle_gateways(filter_index=2, data_index=None)
+    @handle_gateways(filter_index=2, data_index=None, skip=False)
     def _get(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Abstract method for acquring entity as object.
@@ -180,7 +180,7 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         return result
 
     # override
-    @handle_gateways(filter_index=2, data_index=None)
+    @handle_gateways(filter_index=2, data_index=None, skip=False)
     def _get_batch(self, entity_type: str, filters: List[List[FilterMask]], **kwargs: Optional[Any]) -> List[Any]:
         """
         Abstract method for acquring entities as object.
@@ -208,7 +208,7 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         pass
 
     # override
-    @handle_gateways(filter_index=None, data_index=2)
+    @handle_gateways(filter_index=None, data_index=2, skip=False)
     def _post(self, entity_type: str, entity: Any, **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Abstract method for adding a new entity.
@@ -224,7 +224,7 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         return entity
 
     # override
-    @handle_gateways(filter_index=None, data_index=2)
+    @handle_gateways(filter_index=None, data_index=2, skip=False)
     def _post_batch(self, entity_type: str, entities: List[Any], **kwargs: Optional[Any]) -> List[Any]:
         """
         Abstract method for adding new entities.
@@ -253,7 +253,7 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         pass
 
     # override
-    @handle_gateways(filter_index=None, data_index=[2, 3])
+    @handle_gateways(filter_index=None, data_index=[2, 3], skip=False)
     def _patch(self, entity_type: str, entity: Any, patch: Optional[dict] = None, **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Abstract method for patching an existing entity.
@@ -266,7 +266,7 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         pass
 
     # override
-    @handle_gateways(filter_index=None, data_index=[2, 3])
+    @handle_gateways(filter_index=None, data_index=[2, 3], skip=False)
     def _patch_batch(self, entity_type: str, entities: List[Any], patch: List[dict] = [], **kwargs: Optional[Any]) -> List[Any]:
         """
         Abstract method for patching existing entities.
@@ -291,7 +291,7 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         pass
 
     # override
-    @handle_gateways(filter_index=None, data_index=3)
+    @handle_gateways(filter_index=None, data_index=3, skip=False)
     def _delete(self, entity_type: str, entity: Any, **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Abstract method for deleting an entity.
@@ -303,7 +303,7 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         pass
 
     # override
-    @handle_gateways(filter_index=None, data_index=2)
+    @handle_gateways(filter_index=None, data_index=2, skip=False)
     def _delete_batch(self, entity_type: str, entities: List[Any], **kwargs: Optional[Any]) -> List[Any]:
         """
         Abstract method for deleting entities.
