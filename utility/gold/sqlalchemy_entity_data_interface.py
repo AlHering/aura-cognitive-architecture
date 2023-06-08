@@ -181,7 +181,7 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
 
     # override
     @handle_gateways(filter_index=2, data_index=None, skip=False)
-    def _get_batch(self, entity_type: str, filters: List[List[FilterMask]], **kwargs: Optional[Any]) -> List[Any]:
+    def _get_batch(self, entity_type: str, list_of_filters: List[List[FilterMask]], **kwargs: Optional[Any]) -> List[Any]:
         """
         Method for acquring entities as object.
         :param entity_type: Entity type.
@@ -189,9 +189,11 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         :param kwargs: Arbitrary keyword arguments.
         :return: Target entities.
         """
+        converted_filters = [
+            or_(*self.convert_filters(entity_type, filters)) for filters in list_of_filters]
         with self.session_factory() as session:
-            result = session.query(self.model[entity_type]).filter(
-                *self.convert_filters(entity_type, filters)
+            result = session.query(self.model[entity_type]).filter(or_(
+                *converted_filters)
             ).all()
         return result
 
