@@ -11,6 +11,7 @@ from ...configuration import configuration as cfg
 import os
 import copy
 from ...utility.bronze import json_utility, hashing_utility, dictionary_utility
+from ...utility.gold.entity_data_interface import EntityDataInterface
 
 
 class AbstractModelHandler(object):
@@ -20,11 +21,13 @@ class AbstractModelHandler(object):
     model services and managing updates, organization and usage.
     """
 
-    def __init__(self, api_wrapper_dict: dict) -> None:
+    def __init__(self, db_interface: EntityDataInterface, api_wrapper_dict: dict) -> None:
         """
         Initiation method.
+        :param db_interface: Entity Data Interface.
         :param api_wrapper_dict: Dictionary, mapping source to API wrapper.
         """
+        self.db = db_interface
         self._apis = api_wrapper_dict
 
     def import_data(self, import_path: str) -> None:
@@ -83,8 +86,10 @@ class StabeDiffusionModelHandler(AbstractModelHandler):
     Class, representing Model Handler for Stable Diffusion models.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, db_interface: EntityDataInterface, api_wrapper_dict: dict) -> None:
         """
         Initiation method.
+        :param db_interface: Entity Data Interface.
+        :param api_wrapper_dict: Dictionary, mapping source to API wrapper.
         """
-        pass
+        super().__init__(db_interface, api_wrapper_dict)
