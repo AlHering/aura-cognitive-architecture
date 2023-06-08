@@ -23,12 +23,12 @@ def get_authorization_token(password: str) -> str:
     return hashlib.sha256(password.encode('utf-8')).hexdigest()
 
 
-def handle_gateways(filter_index: int = None, data_index: Union[int, List[int]] = None) -> Any:
+def handle_gateways(filter_index: int = None, data_index: Union[int, List[int]] = None, skip: bool = False) -> Any:
     """
     Decorator method for wrapping interfacing methods and handling defaults, obfuscation and deobuscation.
     :param filter_index: Index of filter argument.
     :param data_index: Index (or indices) of data argument(s).
-    :param object_index: Index of object argument.
+    :param skip: Skip gateways.
     :return: Function wrapper.
     """
 
@@ -49,27 +49,30 @@ def handle_gateways(filter_index: int = None, data_index: Union[int, List[int]] 
             :param kwargs: Arbitrary keyword arguments.
             :return: Result of wrapped function.
             """
-            res = None
-            if len(args) >= 2 and isinstance(args[0], EntityDataInterface):
-                instance = args[0]
-                entity_type = args[1]
+            if not skip:
+                res = None
+                if len(args) >= 2 and isinstance(args[0], EntityDataInterface):
+                    instance = args[0]
+                    entity_type = args[1]
 
-                if instance.authorize(entity_type, kwargs.get("authorize")):
-                    if filter_index is not None:
-                        instance.obfuscate_filters(
-                            entity_type, args[filter_index], batch)
-                    if data_index is not None:
-                        if isinstance(data_index, int):
-                            data_index = [data_index]
-                        for index in data_index:
-                            instance.set_defaults(
-                                entity_type, interface_method, args[index], batch)
-                            instance.obfuscate_entity_data(
-                                entity_type, args[index], batch)
+                    if instance.authorize(entity_type, kwargs.get("authorize")):
+                        if filter_index is not None:
+                            instance.obfuscate_filters(
+                                entity_type, args[filter_index], batch)
+                        if data_index is not None:
+                            if isinstance(data_index, int):
+                                data_index = [data_index]
+                            for index in data_index:
+                                instance.set_defaults(
+                                    entity_type, interface_method, args[index], batch)
+                                instance.obfuscate_entity_data(
+                                    entity_type, args[index], batch)
 
-                    res = instance.deobfuscate_entity_data(
-                        entity_type, func(*args, **kwargs), batch)
-            return res
+                        res = instance.deobfuscate_entity_data(
+                            entity_type, func(*args, **kwargs), batch)
+                return res
+            else:
+                return func(*args, **kwargs)
 
         return func_wrapper
 
@@ -295,7 +298,7 @@ class EntityDataInterface(ABC):
     """
 
     @abstractmethod
-    @handle_gateways(filter_index=2, data_index=None)
+    @handle_gateways(filter_index=2, data_index=None, skip=False)
     def _get(self, entity_type: str, filters: List[FilterMask], **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Abstract method for acquring entity as object.
@@ -306,8 +309,7 @@ class EntityDataInterface(ABC):
         """
         pass
 
-    @abstractmethod
-    @handle_gateways(filter_index=2, data_index=None)
+    @handle_gateways(filter_index=2, data_index=None, skip=True)
     def _get_batch(self, entity_type: str, filters: List[List[FilterMask]], **kwargs: Optional[Any]) -> List[Any]:
         """
         Abstract method for acquring entities as object.
@@ -331,7 +333,7 @@ class EntityDataInterface(ABC):
         pass
 
     @abstractmethod
-    @handle_gateways(filter_index=None, data_index=2)
+    @handle_gateways(filter_index=None, data_index=2, skip=False)
     def _post(self, entity_type: str, entity: Any, **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Abstract method for adding a new entity.
@@ -343,7 +345,7 @@ class EntityDataInterface(ABC):
         pass
 
     @abstractmethod
-    @handle_gateways(filter_index=None, data_index=2)
+    @handle_gateways(filter_index=None, data_index=2, skip=True)
     def _post_batch(self, entity_type: str, entities: List[Any], **kwargs: Optional[Any]) -> List[Any]:
         """
         Abstract method for adding new entities.
@@ -367,7 +369,7 @@ class EntityDataInterface(ABC):
         pass
 
     @abstractmethod
-    @handle_gateways(filter_index=None, data_index=[2, 3])
+    @handle_gateways(filter_index=None, data_index=[2, 3], skip=False)
     def _patch(self, entity_type: str, entity: Any, patch: Optional[dict] = None, **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Abstract method for patching an existing entity.
@@ -380,7 +382,7 @@ class EntityDataInterface(ABC):
         pass
 
     @abstractmethod
-    @handle_gateways(filter_index=None, data_index=[2, 3])
+    @handle_gateways(filter_index=None, data_index=[2, 3], skip=True)
     def _patch_batch(self, entity_type: str, entities: List[Any], patch: List[dict] = [], **kwargs: Optional[Any]) -> List[Any]:
         """
         Abstract method for patching existing entities.
@@ -405,7 +407,7 @@ class EntityDataInterface(ABC):
         pass
 
     @abstractmethod
-    @handle_gateways(filter_index=None, data_index=3)
+    @handle_gateways(filter_index=None, data_index=2, skip=False)
     def _delete(self, entity_type: str, entity: Any, **kwargs: Optional[Any]) -> Optional[Any]:
         """
         Abstract method for deleting an entity.
@@ -417,7 +419,7 @@ class EntityDataInterface(ABC):
         pass
 
     @abstractmethod
-    @handle_gateways(filter_index=None, data_index=2)
+    @handle_gateways(filter_index=None, data_index=2, skip=True)
     def _delete_batch(self, entity_type: str, entities: List[Any], **kwargs: Optional[Any]) -> List[Any]:
         """
         Abstract method for deleting entities.
