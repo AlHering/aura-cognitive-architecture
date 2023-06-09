@@ -162,9 +162,9 @@ class StabeDiffusionModelHandler(AbstractModelHandler):
         for unkown_model in self._db.get_unlinked_model_files(files):
             pass
 
-    def calculate_api_source(self, model_file: Any) -> Optional[Tuple[str, str, dict]]:
+    def calculate_linkage(self, model_file: Any) -> Optional[Tuple[str, str, dict]]:
         """
-        Method for getting source and API URL for model file.
+        Method for calculating source linkage.
         :param model_file: Model file object.
         :return: Tuple of source and API URL and metadata if found else None.
         """
