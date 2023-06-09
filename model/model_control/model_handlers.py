@@ -59,6 +59,15 @@ class AbstractModelHandler(object):
         pass
 
     @abc.abstractmethod
+    def link_model_file(self, *args: Optional[List], **kwargs: Optional[dict]) -> None:
+        """
+        Abstract method for linking model files.
+        :param args: Arbitrary arguments.
+        :param kwargs: Arbitrary keyword arguments.
+        """
+        pass
+
+    @abc.abstractmethod
     def update_metadata(self, *args: Optional[List], **kwargs: Optional[dict]) -> None:
         """
         Abstract method for updating cached metadata.
@@ -143,6 +152,15 @@ class StabeDiffusionModelHandler(AbstractModelHandler):
                             self._logger.info(f"Ignoring '{model_file}'.")
                     else:
                         self._logger.info(f"'{model_file}' is already tracked.")
+
+    def link_model_file(self, files: List[str] = None) -> None:
+        """
+        Method for linking model files.
+        :param files: Files to link.
+            Defaults to None, in which case all unknown models are linked.
+        """
+        for unkown_model in self._db.get_unlinked_model_files(files):
+            pass
 
     def update_metadata(self, *args: Optional[List], **kwargs: Optional[dict]) -> None:
         """
