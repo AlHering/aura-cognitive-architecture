@@ -42,4 +42,8 @@ class ModelDatabase(DBInterface):
         :param model_folder: Model folder to fetch tracked model files for.
             Defaults to None in which case all tracked files are returned.
         """
-        pass
+        if model_folder is not None:
+            list_of_filters = [
+                [FilterMask([["folder", "contains", model_folder]])]]
+
+        return self._get_batch("model_file", [*list_of_filters])
