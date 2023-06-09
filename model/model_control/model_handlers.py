@@ -117,28 +117,32 @@ class StabeDiffusionModelHandler(AbstractModelHandler):
 
         for root, _, files in os.walk(model_folder, topdown=True):
             self._logger.info(f"Checking '{root}'...")
-            ignored_subfolder = any(subfolder in ignored_sub_folders for subfolder in root.replace(
-                model_folder, "").split("/"))
-            for model_file in self.extract_model_files(files):
-                self._logger.info(f"Found '{model_file}'.")
-                full_model_path = os.path.join(root, model_file)
-                if not any(os.path.join(model.folder, model.file_name) == full_model_path for model in already_tracked_files):
-                    if model_file not in ignored_model_files and not ignored_subfolder:
-                        self._logger.info(
-                            f"'{model_file}' is not tracked, collecting data...")
+            ignored_subfolder = 
+            
+            if any(subfolder in ignored_sub_folders for subfolder in root.replace(
+                model_folder, "").split("/")):
+                self._logger.info(f"Ignoring '{root}'.")
+            else:
+                for model_file in self.extract_model_files(files):
+                    self._logger.info(f"Found '{model_file}'.")
+                    full_model_path = os.path.join(root, model_file)
+                    if not any(os.path.join(model.folder, model.file_name) == full_model_path for model in already_tracked_files):
+                        if model_file not in ignored_model_files:
+                            self._logger.info(
+                                f"'{model_file}' is not tracked, collecting data...")
 
-                        data = {
-                            "file_name": model_file,
-                            "folder": root,
-                            "sha256": hashing_utility.hash_with_sha256(os.path.join(root, model_file))
-                        }
-                        self._db._post(
-                            "model_file", self._db.model["model_file"](**data))
+                            data = {
+                                "file_name": model_file,
+                                "folder": root,
+                                "sha256": hashing_utility.hash_with_sha256(os.path.join(root, model_file))
+                            }
+                            self._db._post(
+                                "model_file", self._db.model["model_file"](**data))
 
+                        else:
+                            self._logger.info(f"Ignoring '{model_file}'.")
                     else:
-                        self._logger.info(f"Ignoring '{model_file}'.")
-                else:
-                    self._logger.info(f"'{model_file}' is already tracked.")
+                        self._logger.info(f"'{model_file}' is already tracked.")
 
     def update_metadata(self, *args: Optional[List], **kwargs: Optional[dict]) -> None:
         """
