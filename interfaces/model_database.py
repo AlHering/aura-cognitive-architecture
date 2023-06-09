@@ -7,7 +7,9 @@
 """
 from typing import List, Any
 from ..configuration import configuration as cfg
+from ..model.model_control.model_database_profiles import ENTITY_PROFILE, LINKAGE_PROFILE, VIEW_PROFILE
 from ..utility.gold.sqlalchemy_entity_data_interface import SQLAlchemyEntityInterface as DBInterface
+from ..utility.gold.filter_mask import FilterMask
 
 
 class ModelDatabase(DBInterface):
@@ -30,11 +32,11 @@ class ModelDatabase(DBInterface):
             "targets": "*",
             "handle_as_objects": True
         },
-            entity_profiles=cfg.ENTITY_PROFILE,
-            linkage_profiles=cfg.LINKAGE_PROFILE,
-            view_profiles=cfg.VIEW_PROFILE)
+            entity_profiles=ENTITY_PROFILE,
+            linkage_profiles=LINKAGE_PROFILE,
+            view_profiles=VIEW_PROFILE)
 
-    def get_tracked_model_files(model_folder: str = None) -> List[Any]:
+    def get_tracked_model_files(self, model_folder: str = None) -> List[Any]:
         """
         Method for getting tracked model files.
         :param model_folder: Model folder to fetch tracked model files for.
