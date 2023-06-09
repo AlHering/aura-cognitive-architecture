@@ -160,7 +160,9 @@ class StabeDiffusionModelHandler(AbstractModelHandler):
             Defaults to None, in which case all unknown models are linked.
         """
         for unkown_model in self._db.get_unlinked_model_files(files):
-            pass
+            linkage = self.calculate_linkage(unkown_model)
+            if linkage is not None:
+                pass
 
     def calculate_linkage(self, model_file: Any) -> Optional[Tuple[str, str, dict]]:
         """
