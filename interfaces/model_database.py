@@ -27,13 +27,17 @@ class ModelDatabase(DBInterface):
                 "dialect": cfg.ENV["DB_DIALECT"],
                 "encoding": "utf-8"
             },
-            "targets": "*"
+            "targets": "*",
+            "handle_as_objects": True
         },
             entity_profiles=cfg.ENTITY_PROFILE,
             linkage_profiles=cfg.LINKAGE_PROFILE,
             view_profiles=cfg.VIEW_PROFILE)
 
-    def get_tracked_model_files() -> List[Any]:
+    def get_tracked_model_files(model_folder: str = None) -> List[Any]:
         """
-        Method for getting tracked model Files
+        Method for getting tracked model files.
+        :param model_folder: Model folder to fetch tracked model files for.
+            Defaults to None in which case all tracked files are returned.
         """
+        pass
