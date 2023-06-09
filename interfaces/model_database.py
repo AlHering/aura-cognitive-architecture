@@ -55,3 +55,16 @@ class ModelDatabase(DBInterface):
 
         return self._get_batch("model_file", [FilterMask(filter_expressions)
                                               ] if filter_expressions else [])
+
+    def get_unlinked_model_files(self, files: List[str] = None) -> List[Any]:
+        """
+        Method for getting unlinked model files.
+        :param files: Files to link.
+            Defaults to None, in which case all unknown models are linked.
+        :return: List of unlinked model files.
+        """
+        filter_expressions = [["file_name", "in",
+                               files]] if files is not None else []
+
+        return self._get_batch("model_file", [FilterMask(filter_expressions)
+                                              ] if filter_expressions else [])
