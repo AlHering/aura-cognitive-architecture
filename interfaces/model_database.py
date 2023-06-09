@@ -45,6 +45,7 @@ class ModelDatabase(DBInterface):
             Defaults to an empty list.
         :param ignored_model_files: Model files to ignore.  
             Defaults to an empty list.
+        :return: List of tracked model files.
         """
         filter_expressions = [["folder", "contains",
                                model_folder]] if model_folder is not None else []
