@@ -12,7 +12,7 @@ import os
 from logging import Logger
 import copy
 from ...utility.bronze import json_utility, hashing_utility, dictionary_utility
-from ...utility.gold.entity_data_interface import EntityDataInterface
+from ...interfaces.model_database import ModelDatabase
 
 
 class AbstractModelHandler(object):
@@ -22,7 +22,7 @@ class AbstractModelHandler(object):
     model services and managing updates, organization and usage.
     """
 
-    def __init__(self, db_interface: EntityDataInterface, api_wrapper_dict: dict) -> None:
+    def __init__(self, db_interface: ModelDatabase, api_wrapper_dict: dict) -> None:
         """
         Initiation method.
         :param db_interface: Entity Data Interface.
@@ -91,7 +91,7 @@ class StabeDiffusionModelHandler(AbstractModelHandler):
     Class, representing Model Handler for Stable Diffusion models.
     """
 
-    def __init__(self, db_interface: EntityDataInterface, api_wrapper_dict: dict) -> None:
+    def __init__(self, db_interface: ModelDatabase, api_wrapper_dict: dict) -> None:
         """
         Initiation method.
         :param db_interface: Entity Data Interface.
@@ -100,11 +100,13 @@ class StabeDiffusionModelHandler(AbstractModelHandler):
         super().__init__(db_interface, api_wrapper_dict)
         self._logger = Logger["StabeDiffusionModelHandler"]
 
-    def load_model_folder(self, model_folder: str, ignored_sub_folders: List[str] = []) -> None:
+    def load_model_folder(self, model_folder: str, ignored_sub_folders: List[str] = [], ignored_model_files: List[str] = []) -> None:
         """
         Method for loading model folder.
         :param model_folder: Model folder to load.
         :param ignored_sub_folders: Subfolder parts to ignore.  
+            Defaults to an empty list.
+        :param ignored_model_files: Model files to ignore.  
             Defaults to an empty list.
         """
         pass
