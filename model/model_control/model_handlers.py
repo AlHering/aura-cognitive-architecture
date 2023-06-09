@@ -5,7 +5,7 @@
 *            (c) 2023 Alexander Hering             *
 ****************************************************
 """
-from typing import Any, Optional, List
+from typing import Any, Optional, List, Tuple
 import abc
 from ...configuration import configuration as cfg
 import os
@@ -161,6 +161,14 @@ class StabeDiffusionModelHandler(AbstractModelHandler):
         """
         for unkown_model in self._db.get_unlinked_model_files(files):
             pass
+
+    def calculate_api_source(self, model_file: Any) -> Tuple[str, str]:
+        """
+        Method for getting source and API URL for model file.
+        :param model_file: Model file object.
+        :return: Tuple of source and API URL.
+        """
+        pass
 
     def update_metadata(self, *args: Optional[List], **kwargs: Optional[dict]) -> None:
         """
