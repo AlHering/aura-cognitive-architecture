@@ -404,6 +404,8 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
                 )
         elif self._linkage_profiles[linkage]["linkage_type"] == "foreign_key":
             if not self._linkage_profiles[linkage]["relation"].endswith("1"):
-                pass
+                getattr(source_entity, linkage).append(target_entity)
             else:
-                pass
+                setattr(source_entity, linkage, target_entity)
+            self._patch(
+                self._linkage_profiles[linkage]["source"], source_entity)
