@@ -8,6 +8,7 @@ However, besides challenges in coordination, efficiency and resource distributio
 - Wooldridge, Michael John. The logical modelling of computational multi-agent systems. Diss. University of Manchester, Institute of Science and Technology, 1992.
 - Dorri, Ali, Salil S. Kanhere, and Raja Jurdak. "Multi-agent systems: A survey." Ieee Access 6 (2018): 28573-28593.
 - Gronauer, Sven, and Klaus Diepold. "Multi-agent deep reinforcement learning: a survey." Artificial Intelligence Review (2022): 1-49.
+- Boiko, Daniil A., Robert MacKnight, and Gabe Gomes. "Emergent autonomous scientific research capabilities of large language models." arXiv preprint arXiv:2304.05332 (2023).
 
 # Goal
 Distribute infrastructural tasks accross different agents and evaluate benefits in terms of scalability, robustness and adaptability/flexibility against the downsides.
