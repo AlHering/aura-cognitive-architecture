@@ -474,9 +474,9 @@ class EntityDataInterface(ABC):
         pass
 
     @abstractmethod
-    def link_entities(self, linkage: str, *args: Optional[Any], **kwargs: Optional[Any]) -> None:
+    def link_entities(self, linkage: str, *args: Optional[Any], **kwargs: Optional[Any]) -> List[Any]:
         """
-        Method for getting linked entities.
+        Method for linking entities.
         :param args: Arbitrary arguments.
         :param kwargs: Arbitrary keyword arguments.
         :return: Linked entities.
