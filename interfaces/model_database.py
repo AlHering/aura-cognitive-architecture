@@ -60,8 +60,8 @@ class ModelDatabase(DBInterface):
     def get_unlinked_model_files(self, files: List[str] = None) -> List[Any]:
         """
         Method for getting unlinked model files.
-        :param files: Files to link.
-            Defaults to None, in which case all unknown models are linked.
+        :param files: Files to get.
+            Defaults to None, in which case all unknown models are retrieved.
         :return: List of unlinked model files.
         """
         filter_expressions = [["file_name", "in",
