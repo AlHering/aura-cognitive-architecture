@@ -202,6 +202,20 @@ ENTITY_PROFILE = {
 }
 
 LINKAGE_PROFILE = {
+    "link": {
+        "source": "model_file",
+        "target": "model_version",
+        "relation": "1:1",
+        "linkage_type": "foreign_key",
+        "source_key": [
+            "int",
+            "id"
+        ],
+        "target_key": [
+            "int",
+            "id"
+        ]
+    }
 
 }
 
