@@ -77,7 +77,15 @@ class ModelDatabase(DBInterface):
         :param model_version_data: Model version data to link to model file.
             Needs to include "source", "api_url" and "metadata".
         """
-        model_version = self._post(
-            "model_version", self.model["model_version"](**model_version_data))
+        model_version = self._get("model_version", [FilterMask(
+            [["api_url"], "==", model_version_data["api_url"]])])
+        if model_version:
+            model_version.metadata = model_version_data["metadata"]
+            self._patch("model_version", model_version)
+        else:
+            model_version = self._post(
+                "model_version", self.model["model_version"](**model_version_data))
 
         self.link_entities("link", model_file, model_version)
+        model_file.status = "linked"
+        self._patch("model_file", model_file)
