@@ -126,10 +126,9 @@ class StabeDiffusionModelHandler(AbstractModelHandler):
 
         for root, _, files in os.walk(model_folder, topdown=True):
             self._logger.info(f"Checking '{root}'...")
-            ignored_subfolder = 
-            
+
             if any(subfolder in ignored_sub_folders for subfolder in root.replace(
-                model_folder, "").split("/")):
+                    model_folder, "").split("/")):
                 self._logger.info(f"Ignoring '{root}'.")
             else:
                 for model_file in self.extract_model_files(files):
@@ -151,7 +150,8 @@ class StabeDiffusionModelHandler(AbstractModelHandler):
                         else:
                             self._logger.info(f"Ignoring '{model_file}'.")
                     else:
-                        self._logger.info(f"'{model_file}' is already tracked.")
+                        self._logger.info(
+                            f"'{model_file}' is already tracked.")
 
     def link_model_file(self, files: List[str] = None) -> None:
         """
@@ -175,7 +175,8 @@ class StabeDiffusionModelHandler(AbstractModelHandler):
         :return: Tuple of source and API URL and metadata if found else None.
         """
         for possible_source in self._apis:
-            metadata = self._apis[possible_source].collect_metadata("hash", model_file.sha256)
+            metadata = self._apis[possible_source].collect_metadata(
+                "hash", model_file.sha256)
             if metadata:
                 return possible_source, self._apis[possible_source].get_api_url("hash", model_file.sha256), self._apis[possible_source].normalize_metadata(metadata)
         return None
