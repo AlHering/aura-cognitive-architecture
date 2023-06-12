@@ -44,20 +44,10 @@ MANUAL_LINKAGE = {
         "required": True,
         "description": "Linkage type."
     },
-    "source_type": {
-        "type": "str_180",
-        "required": True,
-        "description": "Source type."
-    },
     "source_key": {
         "type": "text",
         "required": True,
         "description": "Source key."
-    },
-    "target_type": {
-        "type": "str_180",
-        "required": True,
-        "description": "Target type."
     },
     "target_key": {
         "type": "text",
@@ -393,11 +383,27 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         pass
 
     # override
-    def link_entities(self, linkage: str, *args: Optional[Any], **kwargs: Optional[Any]) -> None:
+    def link_entities(self, linkage: str, source_entity: Any, target_entity: Any, **kwargs: Optional[Any]) -> None:
         """
-        Method for getting linked entities.
-        :param args: Arbitrary arguments.
-        :param kwargs: Arbitrary keyword arguments.
-        :return: Linked entities.
+        Method for linking entities.
+        :param source_entity: Source entity.
+        :param target_entity: Target entity.
         """
-        pass
+        if self._linkage_profiles[linkage]["linkage_type"] == "manual":
+            source_key = str(
+                getattr(source_entity, self._linkage_profiles[linkage]["source_key"][1]))
+            target_key = str(
+                getattr(source_entity, self._linkage_profiles[linkage]["target_key"][1]))
+            if not self._get("MANUAL_LINKAGE", [FilterMask([["source_key", "==", source_key], ["target_key", "==", target_key]])]):
+                self._post(
+                    "MANUAL_LINKAGE", self.model["MANUAL_LINKAGE"]({
+                        "linkage": linkage,
+                        "source_key": source_key,
+                        "target_key": target_key
+                    })
+                )
+        elif self._linkage_profiles[linkage]["linkage_type"] == "foreign_key":
+            if not self._linkage_profiles[linkage]["relation"].endswith("1"):
+                pass
+            else:
+                pass
