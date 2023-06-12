@@ -69,3 +69,15 @@ class ModelDatabase(DBInterface):
 
         return self._get_batch("model_file", [FilterMask(filter_expressions)
                                               ] if filter_expressions else [])
+
+    def link_model_file(self, model_file: Any, model_version_data: dict) -> None:
+        """
+        Method for linking model files.
+        :param model_file: File to link.
+        :param model_version_data: Model version data to link to model file.
+            Needs to include "source", "api_url" and "metadata".
+        """
+        model_version = self._post(
+            "model_version", self.model["model_version"](**model_version_data))
+
+        self.link_entities("link", model_file, model_version)
