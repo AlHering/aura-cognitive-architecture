@@ -162,7 +162,11 @@ class StabeDiffusionModelHandler(AbstractModelHandler):
         for unkown_model in self._db.get_unlinked_model_files(files):
             linkage = self.calculate_linkage(unkown_model)
             if linkage is not None:
-                pass
+                self._db.link_model_file(unkown_model, {
+                    "source": linkage[0],
+                    "api_url": linkage[1],
+                    "metadata": linkage[2]
+                })
 
     def calculate_linkage(self, model_file: Any) -> Optional[Tuple[str, str, dict]]:
         """
@@ -173,7 +177,7 @@ class StabeDiffusionModelHandler(AbstractModelHandler):
         for possible_source in self._apis:
             metadata = self._apis[possible_source].collect_metadata("hash", model_file.sha256)
             if metadata:
-                return possible_source, self._apis[possible_source].get_api_url("hash", model_file.sha256), metadata
+                return possible_source, self._apis[possible_source].get_api_url("hash", model_file.sha256), self._apis[possible_source].normalize_metadata(metadata)
         return None
 
     def update_metadata(self, *args: Optional[List], **kwargs: Optional[dict]) -> None:
