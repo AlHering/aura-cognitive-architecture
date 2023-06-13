@@ -373,14 +373,17 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
     """
 
     # override
-    def get_linked_entities(self, linkage: str, *args: Optional[Any], **kwargs: Optional[Any]) -> List[Any]:
+    def get_linked_entities(self, linkage: str, source: Any, **kwargs: Optional[Any]) -> List[Any]:
         """
         Method for getting linked entities.
-        :param args: Arbitrary arguments.
+        :param source: Source entity or filter mask, depending on linkage.
         :param kwargs: Arbitrary keyword arguments.
         :return: Linked entities.
         """
-        pass
+        if self._linkage_profiles[linkage]["linkage_type"] == "manual":
+            pass
+        elif self._linkage_profiles[linkage]["linkage_type"] == "foreign_key":
+            pass
 
     # override
     def link_entities(self, linkage: str, source_entity: Any, target_entity: Any, **kwargs: Optional[Any]) -> None:
