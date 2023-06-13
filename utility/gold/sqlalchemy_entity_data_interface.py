@@ -381,8 +381,14 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
         :return: Linked entities.
         """
         if self._linkage_profiles[linkage]["linkage_type"] == "manual":
-            pass
+            source_key = str(
+                getattr(source, self._linkage_profiles[linkage]["source_key"][1]))
+            return self._get_batch("MANUAL_LINKAGE", [
+                FilterMask([["linkage", "==", linkage], ["source_key", "==", source_key]])])
         elif self._linkage_profiles[linkage]["linkage_type"] == "foreign_key":
+            linked_entities = getattr(source, linkage)
+            return linked_entities if isinstance(linked_entities, list) else [linked_entities]
+        elif self._linkage_profiles[linkage]["linkage_type"] == "filter_masks":
             pass
 
     # override
