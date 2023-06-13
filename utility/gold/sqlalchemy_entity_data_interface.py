@@ -373,13 +373,16 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
     """
 
     # override
-    def get_linked_entities(self, linkage: str, source: Any, **kwargs: Optional[Any]) -> List[Any]:
+    def get_linked_entities(self, linkage: str, source: Any, filters: List[FilterMask] = None, **kwargs: Optional[Any]) -> List[Any]:
         """
         Method for getting linked entities.
-        :param source: Source entity or filter mask, depending on linkage.
+        :param source: Source entity.
+        :param filters: List of FilterMasks if linkage type is 'filter_mask'.
         :param kwargs: Arbitrary keyword arguments.
         :return: Linked entities.
         """
+        for filter_mask in filters:
+            filter_mask.reference = source
         if self._linkage_profiles[linkage]["linkage_type"] == "manual":
             source_key = str(
                 getattr(source, self._linkage_profiles[linkage]["source_key"][1]))
@@ -389,7 +392,7 @@ class SQLAlchemyEntityInterface(EntityDataInterface):
             linked_entities = getattr(source, linkage)
             return linked_entities if isinstance(linked_entities, list) else [linked_entities]
         elif self._linkage_profiles[linkage]["linkage_type"] == "filter_masks":
-            pass
+            return self._get_batch(self._linkage_profiles[linkage]["target"], filters)
 
     # override
     def link_entities(self, linkage: str, source_entity: Any, target_entity: Any, **kwargs: Optional[Any]) -> None:
