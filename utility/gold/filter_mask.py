@@ -83,7 +83,7 @@ class FilterMask(object):
     """
 
     def __init__(self, expressions: List[list], operator_dictionary: dict = CMD, deep: bool = False,
-                 relative: bool = False) -> None:
+                 relative: bool = False, reference: Any = None) -> None:
         """
         Initiation method for FilterMasks objects.
         :param expressions: List of expressions.
@@ -91,10 +91,11 @@ class FilterMask(object):
         :param deep: Flag, declaring whether filters are deep. Defaults to False. Examples:
             - Flat filter expression = ["key", "operator", "value"]
             - Deep filter expression = [["key", "nested key"], "operator", "value"]
-        :param relative: Flag, declaring whether filters are relative Defaults to False.
+        :param relative: Flag, declaring whether filters are relative. Defaults to False.
             Relative FilterMasks expect a target key or list of keys (depending on "flat" or "deep" flag) as "value"
             and reference data as additional parameter for checks. The target key(s) are used to unwrap the reference
             data values for comparison.
+        :param reference: Reference data if FilterMask is relative.
         """
         self.expressions = []
         self.operators = set()
@@ -102,6 +103,7 @@ class FilterMask(object):
 
         self.deep = deep
         self.relative = relative
+        self.reference = reference
         self.add_filter_expressions(expressions)
         self.set_operator_dictionary(operator_dictionary)
 
@@ -135,6 +137,8 @@ class FilterMask(object):
         :param reference_data: Reference data in case of relative FilterMasks.
         :return: List of expressions.
         """
+        if reference_data is None:
+            reference_data = self.reference
         if isinstance(data, dict):
             if self.deep:
                 return self.operator_dictionary["and"](self.operator_dictionary[exp[1]](
@@ -163,6 +167,8 @@ class FilterMask(object):
         :param reference_data: Reference data in case of relative FilterMasks.
         :return: True, if data matches filters, else False.
         """
+        if reference_data is None:
+            reference_data = self.reference
         if self.deep:
             return self._check_deep(data, reference_data)
         else:
