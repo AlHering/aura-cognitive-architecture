@@ -6,7 +6,7 @@
 ****************************************************
 """
 from configuration.common_frontend_config import global_config
-from submodules.common_flask_frontend.control.common_flask_application_controller import CommonFlaskApplicationController
+from view.flask_frontend.flask_app_controller import CommonFlaskApplicationController
 aura_app_controller = CommonFlaskApplicationController(global_config)
 
 
