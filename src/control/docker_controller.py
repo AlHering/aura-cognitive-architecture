@@ -12,8 +12,10 @@ class DockerController(object):
     Controller for managing Docker-based environments.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, cache: dict = None) -> None:
         """
         Initiation method.
+        :param cache: Cache to initialize controller with.
+            Defaults to None in which case an empty cache is created.
         """
-        pass
+        self._cache = cache if cache is not None else {}
