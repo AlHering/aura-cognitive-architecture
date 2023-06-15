@@ -19,7 +19,7 @@ from flask import Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from src.model.flask_frontend.plugins import BlueprintPlugin
 from src.model.flask_frontend import exceptions
-from .plugin_controller import PluginController
+from src.control.plugin_controller import PluginController
 from src.configuration import configuration as cfg
 from datetime import datetime
 import uuid
