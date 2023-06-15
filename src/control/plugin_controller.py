@@ -9,11 +9,11 @@ import os
 import logging
 import traceback
 from typing import Tuple, Optional, Any, List
-from ..configuration import paths
-from ..model.exceptions import PluginImportException
-from ..model import GenericPlugin
-from ..utility.bronze import json_utility
-from ..utility.silver import file_system_utility
+from src.configuration import paths
+from src.model.exceptions import PluginImportException
+from src.model import GenericPlugin
+from src.utility.bronze import json_utility
+from src.utility.silver import file_system_utility
 
 
 class PluginController(object):

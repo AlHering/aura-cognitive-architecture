@@ -17,17 +17,17 @@ import hashlib
 import traceback
 from flask import Blueprint
 from flask_sqlalchemy import SQLAlchemy
-from ..model.flask_frontend.plugins import BlueprintPlugin
+from src.model.flask_frontend.plugins import BlueprintPlugin
 from . import exceptions
 from .plugin_controller import PluginController
-from ..configuration import configuration as cfg
+from src.configuration import configuration as cfg
 from datetime import datetime
 import uuid
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
 
-class CommonFlaskApplicationController(object):
+class FlaskFrontendController(object):
     """
     Controller for managing common flask-based applications.
     """

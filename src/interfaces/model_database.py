@@ -6,10 +6,10 @@
 ****************************************************
 """
 from typing import List, Any
-from ..configuration import configuration as cfg
-from ..configuration.model_database_config import ENTITY_PROFILE, LINKAGE_PROFILE, VIEW_PROFILE
-from ..utility.gold.sqlalchemy_entity_data_interface import SQLAlchemyEntityInterface as DBInterface
-from ..utility.gold.filter_mask import FilterMask
+from src.configuration import configuration as cfg
+from src.configuration.model_database_config import ENTITY_PROFILE, LINKAGE_PROFILE, VIEW_PROFILE
+from src.utility.gold.sqlalchemy_entity_data_interface import SQLAlchemyEntityInterface as DBInterface
+from src.utility.gold.filter_mask import FilterMask
 
 
 class ModelDatabase(DBInterface):

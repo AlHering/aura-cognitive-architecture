@@ -8,9 +8,9 @@
 import os
 from typing import Any, List
 from flask import Blueprint
-from common_plugin_controller.static_utility import environment_utility
-from common_plugin_controller.model.plugins import GenericPlugin
-from common_plugin_controller.model.exceptions import PluginImportException, PluginRuntimeException
+from src.utility.silver import environment_utility
+from src.model.plugin_control.plugins import GenericPlugin
+from src.model.plugin_control.exceptions import PluginImportException, PluginRuntimeException
 
 
 class BlueprintPlugin(GenericPlugin):

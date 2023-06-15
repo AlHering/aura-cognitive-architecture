@@ -7,12 +7,12 @@
 """
 from typing import Any, Optional, List, Tuple
 import abc
-from ...configuration import configuration as cfg
+from src.configuration import configuration as cfg
 import os
 from logging import Logger
 import copy
-from ...utility.bronze import json_utility, hashing_utility, dictionary_utility
-from ...interfaces.model_database import ModelDatabase
+from src.utility.bronze import json_utility, hashing_utility, dictionary_utility
+from src.interfaces.model_database import ModelDatabase
 
 
 class AbstractModelHandler(object):

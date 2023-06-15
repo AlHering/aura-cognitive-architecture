@@ -11,8 +11,8 @@ from time import sleep
 import shutil
 from logging import Logger
 from typing import Any, Optional, List
-from ...utility.silver import image_utility, internet_utility
-from ...configuration import configuration as cfg
+from src.utility.silver import image_utility, internet_utility
+from src.configuration import configuration as cfg
 import abc
 
 
