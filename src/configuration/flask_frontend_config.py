@@ -81,6 +81,42 @@ menu_config = {
                     }
                 }
             }
+        },
+        "datasets": {
+            "#meta": {
+                "icon": "#real-estate-1",
+                "type": "xl",
+            },
+            "Dataset Overview": {
+                "icon": "bed",
+                "type": "fa",
+                "href": "index",
+                "flag": {
+                    "type": "warning",
+                    "text": "6 New"
+                }
+            },
+            "Pipelines": {
+                "icon": "bed",
+                "type": "fa",
+                "href": "index"
+            },
+            "Utility": {
+                "icon": "#browser-window-1",
+                "type": "xl",
+                "href": "#utility_dropdown",
+                "dropdown": {
+                    "Extractors": {
+                        "href": "index"
+                    },
+                    "Transformers": {
+                        "href": "index"
+                    },
+                    "Loaders": {
+                        "href": "index"
+                    }
+                }
+            }
         }
     }
 }
