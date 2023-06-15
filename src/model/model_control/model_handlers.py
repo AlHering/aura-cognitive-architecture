@@ -102,13 +102,15 @@ class StabeDiffusionModelHandler(AbstractModelHandler):
     Class, representing Model Handler for Stable Diffusion models.
     """
 
-    def __init__(self, db_interface: ModelDatabase, api_wrapper_dict: dict) -> None:
+    def __init__(self, db_interface: ModelDatabase, api_wrapper_dict: dict, cache: dict = None) -> None:
         """
         Initiation method.
         :param db_interface: Entity Data Interface.
         :param api_wrapper_dict: Dictionary, mapping source to API wrapper.
+        :param cache: Cache to initialize handler with.
+            Defaults to None in which case an empty cache is created.
         """
-        super().__init__(db_interface, api_wrapper_dict)
+        super().__init__(db_interface, api_wrapper_dict, cache)
         self._logger = Logger["StabeDiffusionModelHandler"]
 
     def load_model_folder(self, model_folder: str, ignored_sub_folders: List[str] = [], ignored_model_files: List[str] = []) -> None:
