@@ -19,39 +19,66 @@ endpoint_config = {
 # Note that icons are xlink or font-awesome references
 menu_config = {
     "menus": {
-        "Aura": {
+        "docker_control": {
             "#meta": {
                 "icon": "#real-estate-1",
                 "type": "xl",
             },
-            "Home": {
+            "Environment": {
                 "icon": "#real-estate-1",
                 "type": "xl",
                 "href": "index"
             },
-            "My Dropdown": {
+            "Blueprints": {
                 "icon": "#browser-window-1",
                 "type": "xl",
                 "href": "#drop",
                 "dropdown": {
-                    "Page1": {
+                    "Environments": {
                         "href": "index"
                     },
-                    "Page2": {
+                    "Agents": {
                         "href": "index"
                     },
-                    "Page3": {
+                    "Interfaces": {
                         "href": "index"
                     }
                 }
+            }
+        },
+        "model_control": {
+            "#meta": {
+                "icon": "#real-estate-1",
+                "type": "xl",
             },
-            "Demo": {
+            "Models Overview": {
                 "icon": "bed",
                 "type": "fa",
                 "href": "index",
                 "flag": {
                     "type": "warning",
                     "text": "6 New"
+                }
+            },
+            "Sources": {
+                "icon": "bed",
+                "type": "fa",
+                "href": "index"
+            },
+            "Utility": {
+                "icon": "#browser-window-1",
+                "type": "xl",
+                "href": "#drop",
+                "dropdown": {
+                    "Training": {
+                        "href": "index"
+                    },
+                    "Finetuning": {
+                        "href": "index"
+                    },
+                    "Other": {
+                        "href": "index"
+                    }
                 }
             }
         }
