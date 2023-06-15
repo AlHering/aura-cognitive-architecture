@@ -32,7 +32,7 @@ menu_config = {
             "Blueprints": {
                 "icon": "#browser-window-1",
                 "type": "xl",
-                "href": "#drop",
+                "href": "#blueprints_dropdown",
                 "dropdown": {
                     "Environments": {
                         "href": "index"
@@ -68,7 +68,7 @@ menu_config = {
             "Utility": {
                 "icon": "#browser-window-1",
                 "type": "xl",
-                "href": "#drop",
+                "href": "#utility_dropdown",
                 "dropdown": {
                     "Training": {
                         "href": "index"
