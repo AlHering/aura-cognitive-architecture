@@ -10,4 +10,4 @@ from view.flask_frontend.flask_app_controller import CommonFlaskApplicationContr
 aura_app_controller = CommonFlaskApplicationController(global_config)
 
 
-aura_app_controller.run_app()
+aura_app_controller.run_app(global_config)

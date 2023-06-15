@@ -17,13 +17,10 @@ import hashlib
 import traceback
 from flask import Blueprint
 from flask_sqlalchemy import SQLAlchemy
-from ...configuration import configuration as cfg
-from ...model import exceptions
-from ...model import database
-from ...model import BlueprintPlugin
-from ...model import login_manager, user_loader, login_user, logout_user
-from ...control import email_control
+from .plugins import BlueprintPlugin
+from . import exceptions
 from ...submodules.common_plugin_controller.control.common_plugin_controller import PluginController
+from ...configuration import configuration as cfg
 from datetime import datetime
 import uuid
 import logging
