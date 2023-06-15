@@ -32,7 +32,7 @@ menu_config = {
             "Blueprints": {
                 "icon": "#browser-window-1",
                 "type": "xl",
-                "href": "#blueprints_dropdown",
+                "href": "#docker_control_blueprints_dropdown",
                 "dropdown": {
                     "Environments": {
                         "href": "index"
@@ -68,7 +68,7 @@ menu_config = {
             "Utility": {
                 "icon": "#browser-window-1",
                 "type": "xl",
-                "href": "#utility_dropdown",
+                "href": "#model_control_utility_dropdown",
                 "dropdown": {
                     "Training": {
                         "href": "index"
@@ -104,7 +104,7 @@ menu_config = {
             "Utility": {
                 "icon": "#browser-window-1",
                 "type": "xl",
-                "href": "#utility_dropdown",
+                "href": "#datasets_utility_dropdown",
                 "dropdown": {
                     "Extractors": {
                         "href": "index"
