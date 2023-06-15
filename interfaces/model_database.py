@@ -7,7 +7,7 @@
 """
 from typing import List, Any
 from ..configuration import configuration as cfg
-from ..model.model_control.model_database_profiles import ENTITY_PROFILE, LINKAGE_PROFILE, VIEW_PROFILE
+from ..configuration.model_database_config import ENTITY_PROFILE, LINKAGE_PROFILE, VIEW_PROFILE
 from ..utility.gold.sqlalchemy_entity_data_interface import SQLAlchemyEntityInterface as DBInterface
 from ..utility.gold.filter_mask import FilterMask
 
