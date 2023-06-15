@@ -1,4 +1,0 @@
-[submodule "submodules/common_plugin_controller"]
-	path = submodules/common_plugin_controller
-	url = git@github.com:AlHering/common_plugin_controller.git
-	branch = development
