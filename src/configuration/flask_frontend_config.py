@@ -76,7 +76,7 @@ menu_config = {
                     "Finetuning": {
                         "href": "index"
                     },
-                    "Other": {
+                    "Embeddings": {
                         "href": "index"
                     }
                 }
