@@ -18,7 +18,7 @@ import traceback
 from flask import Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from src.model.flask_frontend.plugins import BlueprintPlugin
-from . import exceptions
+from src.model.flask_frontend import exceptions
 from .plugin_controller import PluginController
 from src.configuration import configuration as cfg
 from datetime import datetime
@@ -85,8 +85,8 @@ class FlaskFrontendController(object):
         Internal method for setting up app.
         """
         self.app = Flask(__name__,
-                         static_folder=f"{cfg.PATHS.PACKAGE_PATH}/common_static",
-                         template_folder=f"{cfg.PATHS.PACKAGE_PATH}/common_templates")
+                         static_folder=cfg.PATHS.FLASK_COMMON_STATIC,
+                         template_folder=cfg.PATHS.FLASK_COMMON_TEMPLATES)
         self.app.secret_key = os.environ.get("FLASK_SECRET")
 
     def _setup_common_routs(self) -> None:

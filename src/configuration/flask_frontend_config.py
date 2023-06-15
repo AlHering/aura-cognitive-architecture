@@ -16,7 +16,7 @@ endpoint_config = {
         "models": "",
     }
 }
-# Note that icons are xlink references
+# Note that icons are xlink or font-awesome references
 menu_config = {
     "menus": {
         "Aura": {
@@ -28,11 +28,6 @@ menu_config = {
                 "icon": "#real-estate-1",
                 "type": "xl",
                 "href": "index"
-            },
-            "Forms": {
-                "icon": "bed",
-                "type": "fa",
-                "href": "forms"
             },
             "My Dropdown": {
                 "icon": "#browser-window-1",
@@ -49,11 +44,6 @@ menu_config = {
                         "href": "index"
                     }
                 }
-            },
-            "Login page": {
-                "icon": "bed",
-                "type": "fa",
-                "href": "login"
             },
             "Demo": {
                 "icon": "bed",
