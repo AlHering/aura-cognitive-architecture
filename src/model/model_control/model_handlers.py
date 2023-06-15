@@ -22,16 +22,18 @@ class AbstractModelHandler(object):
     model services and managing updates, organization and usage.
     """
 
-    def __init__(self, db_interface: ModelDatabase, api_wrapper_dict: dict) -> None:
+    def __init__(self, db_interface: ModelDatabase, api_wrapper_dict: dict, cache: dict = None) -> None:
         """
         Initiation method.
         :param db_interface: Entity Data Interface.
         :param api_wrapper_dict: Dictionary, mapping source to API wrapper.
+        :param cache: Cache to initialize handler with.
+            Defaults to None in which case an empty cache is created.
         """
         self._logger = Logger["ModelHandler"]
         self._db = db_interface
         self._apis = api_wrapper_dict
-        self._cache = {}
+        self._cache = cache if cache is not None else {}
 
     def import_cache(self, import_path: str) -> None:
         """
