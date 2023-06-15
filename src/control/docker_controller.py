@@ -5,7 +5,7 @@
 *            (c) 2023 Alexander Hering             *
 ****************************************************
 """
-from src.utility.bronze import json_utility
+from src.utility.bronze import json_utility, docker_utility
 
 
 class DockerController(object):
