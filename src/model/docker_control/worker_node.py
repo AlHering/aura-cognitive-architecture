@@ -30,3 +30,15 @@ class WorkerNode(object):
         """
         self._setup_profile = setup_profile
         self._interface_profile = interface_profile
+
+    def _validate_setup_profile() -> bool:
+        """
+        Internal method for validating setup profile.
+        """
+        pass
+
+    def _validate_interface_profile() -> bool:
+        """
+        Internal method for validating interface profile.
+        """
+        pass
