@@ -23,3 +23,9 @@ class DriverNode(object):
         """
         self._db = db_interface
         self.worker_nodes = worker_nodes
+
+    def add_worker_node(self, worker_node: WorkerNode) -> None:
+        """
+        Method for adding worker ndoe.
+        """
+        self.worker_nodes.append(worker_node)
