@@ -43,3 +43,10 @@ class WorkerNode(object):
         Internal method for validating interface profile.
         """
         pass
+
+    def import_dockerfile(path: str) -> None:
+        """
+        Method for importing Dockerfile. 
+        :path: Dockerfile path.
+        """
+        pass
