@@ -5,7 +5,7 @@
 *            (c) 2023 Alexander Hering             *
 ****************************************************
 """
-from typing import List
+from typing import Any
 from src.utility.gold.entity_data_interface import EntityDataInterface
 from .worker_node import WorkerNode
 
@@ -15,17 +15,18 @@ class DriverNode(object):
     Class representing a container-based driver node.
     """
 
-    def __init__(self, db_interface: EntityDataInterface, worker_nodes: List[WorkerNode]) -> None:
+    def __init__(self, db_interface: EntityDataInterface, blueprints: list) -> None:
         """
         Initiation method.
         :param db_interface: Database interface.
-        :param worker_nodes: List of worker nodes to initiate driver node with.
+        :param blueprints: Blueprints for worker nodes.
         """
         self._db = db_interface
-        self.worker_nodes = worker_nodes
+        self.blueprints = blueprints
 
-    def add_worker_node(self, worker_node: WorkerNode) -> None:
+    def add_blueprint(self, blueprint: Any) -> None:
         """
         Method for adding worker ndoe.
+        :param blueprint: Blueprint to add.
         """
-        self.worker_nodes.append(worker_node)
+        self.blueprints.append(blueprint)
