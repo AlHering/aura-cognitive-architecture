@@ -12,8 +12,21 @@ class WorkerNode(object):
     Class representing a container-based working node.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, setup_profile: dict, interface_profile: dict) -> None:
         """
         Initiation method.
+        :param setup_profile: Setup profile as dictionary, containing
+            'image': Base image as string
+            'environment':  List of tuples of the form (<variable>, <value>)
+            'arguments': List of tuples of the form (<variable>, <value>)
+            'packages': List of packages to install on image level
+            'runtime': Runtime type as string
+            'runtime_version': Optional runtime version
+            'runtime_packages': Runtime packages to install
+            'run': List of lines to run sequentially
+            'cmd': Command to be run when starting container as List of command elements
+        :param interface_profile: Interface profile as dictionary, containing
+            nested configuration dictionaries under the supported interface types.
         """
-        pass
+        self._setup_profile = setup_profile
+        self._interface_profile = interface_profile
