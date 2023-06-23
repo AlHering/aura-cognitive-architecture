@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 ****************************************************
-*                common_plugin_controller                 
+*           aura-cognitive-architecture
 *            (c) 2023 Alexander Hering             *
 ****************************************************
 """
