@@ -31,6 +31,7 @@ class WorkerNode(object):
         """
         self._setup_profile = setup_profile
         self._interface_profile = interface_profile
+        self.running = False
 
     def _validate_setup_profile() -> bool:
         """
